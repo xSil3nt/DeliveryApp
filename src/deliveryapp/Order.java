@@ -9,7 +9,8 @@ public class Order {
         PENDING,
         IN_PROGRESS,
         DELIVERED,
-        CANCELED
+        CANCELED,
+        UNKNOWN
     }
     
     private int orderId;

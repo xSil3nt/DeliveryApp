@@ -1,5 +1,6 @@
 package deliveryapp;
 
+import deliveryapp.Order.OrderStatus;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -68,6 +69,42 @@ public class Customer extends User {
     
     public ArrayList<Order> viewOrders() {
         return orderHistory;
+    }
+    
+    private Order findOrderById(int orderId) {
+        for (Order order : orderHistory) {
+            if (order.getOrderId() == orderId) {
+                return order; // Return the order if found
+            }
+        }
+        return null; // Return null to indicate that the order with the specified orderId was not found in orderHistory
+    }
+    
+    public int reOrder(int orderId) {
+        Order originalOrder = findOrderById(orderId);
+        if (originalOrder != null) {
+            // Duplicate the items from the original order
+            cart = originalOrder.getCart();
+            // Place a new order
+            placeOrder();
+            return 0;
+        } else {
+            // Return -1 to indicate error if order is not found
+            return -1;
+        }
+    }
+    
+    public OrderStatus orderStatus(int orderId) {
+        Order order = findOrderById(orderId);
+        if (order != null) {
+            return order.getStatus();
+        } else {
+            return OrderStatus.UNKNOWN; 
+        }
+    }
+
+    public void writeReview(int orderId, String review) {
+        //Implement review object?
     }
     
     
