@@ -17,4 +17,20 @@ public class User {
         this.password = password;
         this.userType = userType;
     }
+    
+    public int checkUsername(String username) {
+        if (username == this.username){
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+    
+    public int checkPassword(String password) {
+        if (password == this.password){
+            return 0;
+        } else {
+            return 1;
+        }
+    }
 }

@@ -10,11 +10,20 @@ public class Customer extends User {
     private ArrayList<Integer> cart = new ArrayList<>(); // List of item IDs in the cart
     private ArrayList<Order> orderHistory = new ArrayList<>(); // List of orders
     private int customerId;
+    private boolean loggedIn;
     
     public Customer(String username, String password, int customerId, double balance) {
         super(username, password, 2); // Assuming 2 represents the user type for customers
         this.balance = balance;
         this.customerId = customerId;
+    }
+    
+    public int customerLogin(String username, String password) {
+        if ((super.checkUsername(username) == 0) && (super.checkPassword(password) == 0)) {
+            loggedIn = true;
+            return 0; // Success
+        } else
+            return 1; // Fail
     }
     
     public int getCustomerId() {
