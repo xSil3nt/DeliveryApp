@@ -19,7 +19,7 @@ public class User {
     }
     
     public int checkUsername(String username) {
-        if (username == this.username){
+        if (username.equals(this.username)){
             return 0;
         } else {
             return 1;
@@ -27,7 +27,7 @@ public class User {
     }
     
     public int checkPassword(String password) {
-        if (password == this.password){
+        if (password.equals(this.password)){
             return 0;
         } else {
             return 1;
