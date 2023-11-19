@@ -33,4 +33,8 @@ public class User {
             return 1;
         }
     }
+    
+    public String getUsername() {
+        return username;
+    }
 }

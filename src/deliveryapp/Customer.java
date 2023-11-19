@@ -1,6 +1,6 @@
 package deliveryapp;
 
-import deliveryapp.Order.OrderStatus;
+import deliveryapp.Order.*;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -9,7 +9,6 @@ public class Customer extends User {
     private double balance;
     private ArrayList<Integer> cart = new ArrayList<>(); // List of item IDs in the cart
     private ArrayList<Order> orderHistory = new ArrayList<>(); // List of orders
-    private int customerId;
     private boolean loggedIn;
     
     public Customer(String username, String password, int customerId, double balance) {
@@ -24,10 +23,6 @@ public class Customer extends User {
             return 0; // Success
         } else
             return 1; // Fail
-    }
-    
-    public int getCustomerId() {
-        return customerId;
     }
 
     public double getBalance() {
@@ -66,7 +61,7 @@ public class Customer extends User {
     
     public int placeOrder() {
         int orderId = 0; //Generate an orderid, something like item ids + customer id + date and b64 encode? may change this to string
-        Order newOrder = new Order(orderId, getCustomerId(), location, new Date(), new ArrayList<>(cart));
+        Order newOrder = new Order(orderId, super.getUsername(), location, new Date(), new ArrayList<>(cart));
         orderHistory.add(newOrder);
         cart.clear();
         return orderId;

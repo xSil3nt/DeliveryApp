@@ -14,16 +14,16 @@ public class Order {
     }
     
     private int orderId;
-    private int customerId;
+    private String customerUsername;
     private String deliveryLocation;
     private Date orderDate;
     private ArrayList<Integer> cart; // List of item IDs in the order
     private double totalAmount;
     private OrderStatus status;
 
-    public Order(int orderId, int customerId, String deliveryLocation, Date orderDate, ArrayList<Integer> cart) {
+    public Order(int orderId, String customerUsername, String deliveryLocation, Date orderDate, ArrayList<Integer> cart) {
         this.orderId = orderId;
-        this.customerId = customerId;
+        this.customerUsername = customerUsername;
         this.deliveryLocation = deliveryLocation;
         this.orderDate = orderDate;
         this.cart = cart;
