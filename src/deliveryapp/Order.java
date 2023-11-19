@@ -37,8 +37,8 @@ public class Order {
         return orderId;
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public String getCustomerUsername() {
+        return customerUsername;
     }
 
     public String getDeliveryLocation() {

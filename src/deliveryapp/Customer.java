@@ -14,7 +14,6 @@ public class Customer extends User {
     public Customer(String username, String password, int customerId, double balance) {
         super(username, password, 2); // Assuming 2 represents the user type for customers
         this.balance = balance;
-        this.customerId = customerId;
     }
     
     public int customerLogin(String username, String password) {
