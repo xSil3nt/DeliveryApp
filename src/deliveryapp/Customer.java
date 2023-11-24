@@ -11,7 +11,7 @@ public class Customer extends User {
     private ArrayList<Order> orderHistory = new ArrayList<>(); // List of orders
     private boolean loggedIn;
     
-    public Customer(String username, String password, int customerId, double balance) {
+    public Customer(String username, String password, double balance) {
         super(username, password, 2); // Assuming 2 represents the user type for customers
         this.balance = balance;
     }

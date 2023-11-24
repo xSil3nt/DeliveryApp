@@ -9,10 +9,18 @@ package deliveryapp;
  */
 public class CustomerGUI extends javax.swing.JFrame {
 
+    Customer loggedIn;
+    
     /**
      * Creates new form CustomerGUI
      */
-    public CustomerGUI() {
+    public CustomerGUI(String username, String password, int balance, String location) {
+        initComponents();
+        loggedIn = new Customer(username, password, balance);
+        loggedIn.setLocation(location);
+    }
+
+    private CustomerGUI() {
         initComponents();
     }
 
@@ -130,7 +138,7 @@ public class CustomerGUI extends javax.swing.JFrame {
                         .addGap(28, 28, 28)
                         .addComponent(jButton5))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         pack();
