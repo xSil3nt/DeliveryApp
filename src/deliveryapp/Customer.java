@@ -12,7 +12,7 @@ public class Customer extends User {
     private boolean loggedIn;
     
     public Customer(String username, String password, double balance) {
-        super(username, password, 2); // Assuming 2 represents the user type for customers
+        super(username, password, 2); // Usertype 2 is for customer
         this.balance = balance;
     }
     
