@@ -61,7 +61,7 @@ public class Customer extends User {
     
     public int placeOrder() {
         int orderId = 0; //Generate an orderid, something like item ids + customer id + date and b64 encode? may change this to string
-        Order newOrder = new Order(orderId, super.getUsername(), location, new Date(), new ArrayList<>(cart));
+        Order newOrder = new Order(orderId, super.getUsername(), location, new Date(), cart);
         orderHistory.add(newOrder);
         cart.clear();
         return orderId;
