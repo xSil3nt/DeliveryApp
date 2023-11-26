@@ -3,8 +3,13 @@
  */
 package deliveryapp;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 import javax.swing.table.*;
 import javax.swing.*;
@@ -19,6 +24,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     private String[] column = {"Vendor", "ID", "Item Name", "Description", "Price"};
     Customer loggedIn;
     private static final String MENU_PATH = "C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\menu.txt";
+    private static final String CUST_CREDS_PATH = "C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\customerCreds.txt";
     
     /**
      * Creates new form CustomerGUI
@@ -361,9 +367,53 @@ public class CustomerGUI extends javax.swing.JFrame {
         if (userInput != null && !userInput.trim().isEmpty()) {
             loggedIn.setLocation(userInput);
             lb_location.setText(loggedIn.getLocation());
+            updateCustomerLocation(userInput);
         }
     }//GEN-LAST:event_bt_setLocationActionPerformed
 
+    private void updateCustomerLocation(String newLocation) {
+        try {
+            // Read the content of the file
+            File file = new File(CUST_CREDS_PATH);
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            StringBuilder content = new StringBuilder();
+            String line;
+
+            // Iterate through the lines, update the location, and build the new content
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts.length == 4) {
+                    String username = parts[0];
+                    String password = parts[1];
+                    String balance = parts[2];
+                    String currentLocation = parts[3];
+
+                    // Assuming the username is "Shazin" based on your example
+                    if (username.equals("Shazin")) {
+                        // Update the location for the specific user
+                        currentLocation = newLocation;
+                    }
+
+                    // Reconstruct the line with the updated information
+                    String updatedLine = username + ";" + password + ";" + balance + ";" + currentLocation;
+                    content.append(updatedLine).append("\n");
+                }
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Write the updated content back to the file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(content.toString());
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error updating customer location.");
+        }
+}
+    
     /**
      * @param args the command line arguments
      */
