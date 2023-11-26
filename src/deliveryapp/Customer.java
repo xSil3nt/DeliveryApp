@@ -9,20 +9,12 @@ public class Customer extends User {
     private double balance;
     private ArrayList<Integer> cart = new ArrayList<>(); // List of item IDs in the cart
     private ArrayList<Order> orderHistory = new ArrayList<>(); // List of orders
-    private boolean loggedIn;
     
     public Customer(String username, String password, double balance) {
         super(username, password, 2); // Usertype 2 is for customer
         this.balance = balance;
     }
     
-    public int customerLogin(String username, String password) {
-        if ((super.checkUsername(username) == 0) && (super.checkPassword(password) == 0)) {
-            loggedIn = true;
-            return 0; // Success
-        } else
-            return 1; // Fail
-    }
 
     public double getBalance() {
         return balance;
@@ -49,6 +41,15 @@ public class Customer extends User {
     public void clearCart() {
         cart.clear();
     }
+    
+    public ArrayList<Integer> getCart() {
+        return cart;
+    }
+
+    public void removeFromCart(int itemId) {
+        cart.remove(Integer.valueOf(itemId));
+    }
+
     
     public void setLocation(String location) {
         this.location = location;

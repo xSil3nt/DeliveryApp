@@ -24,29 +24,17 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="bt_orders" min="-2" pref="92" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="bt_vendor1" min="-2" max="-2" attributes="0"/>
-                          <Component id="bt_vendor3" min="-2" max="-2" attributes="0"/>
-                          <Component id="bt_vendor2" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-              </Group>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="250" max="-2" attributes="0"/>
+                      <Component id="bt_orders" min="-2" pref="92" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="252" max="-2" attributes="0"/>
                       <Component id="lb_welcome" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="247" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="jScrollPane1" min="-2" pref="500" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="25" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" min="-2" pref="603" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -56,9 +44,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jButton1" alignment="1" min="-2" pref="94" max="-2" attributes="0"/>
-                          <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="bt_placeOrder" pref="110" max="32767" attributes="0"/>
+                          <Component id="bt_addToCart" alignment="1" max="32767" attributes="0"/>
+                          <Component id="bt_reviews" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   </Group>
@@ -77,22 +66,20 @@
               </Group>
               <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="bt_vendor1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                      <Component id="bt_vendor2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="bt_vendor3" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jScrollPane1" min="-2" pref="343" max="-2" attributes="0"/>
+                      <EmptySpace pref="41" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                      <Component id="bt_reviews" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                      <Component id="bt_addToCart" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="bt_placeOrder" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="86" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jScrollPane1" alignment="0" min="-2" pref="343" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="41" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -114,27 +101,6 @@
     <Component class="javax.swing.JButton" name="bt_orders">
       <Properties>
         <Property name="text" type="java.lang.String" value="Orders"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="bt_vendor1">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Vendor 1"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_vendor1ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="bt_vendor2">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Vendor 2"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_vendor2ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="bt_vendor3">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Vendor 3"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -160,15 +126,26 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="bt_reviews">
       <Properties>
         <Property name="text" type="java.lang.String" value="Reviews"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton2">
+    <Component class="javax.swing.JButton" name="bt_addToCart">
       <Properties>
         <Property name="text" type="java.lang.String" value="Add to cart"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_addToCartActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="bt_placeOrder">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Place Order"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_placeOrderActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
