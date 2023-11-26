@@ -15,6 +15,7 @@ import javax.swing.*;
  * @author Shazin
  */ 
 public class CustomerLoginGUI extends javax.swing.JFrame {
+    private static final String CUST_CREDS_PATH = "C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\customerCreds.txt";
 
     /**
      * Creates new form CustomerLoginGUI
@@ -103,7 +104,7 @@ public class CustomerLoginGUI extends javax.swing.JFrame {
 
     private void bt_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_loginActionPerformed
         try {
-            Scanner scanner = new Scanner(new File("C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\customerCreds.txt"));
+            Scanner scanner = new Scanner(new File(CUST_CREDS_PATH));
             
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();

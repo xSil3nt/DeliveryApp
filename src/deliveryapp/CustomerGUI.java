@@ -18,6 +18,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     private DefaultTableModel model = new DefaultTableModel();
     private String[] column = {"Vendor", "ID", "Item Name", "Description", "Price"};
     Customer loggedIn;
+    private static final String MENU_PATH = "C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\menu.txt";
     
     /**
      * Creates new form CustomerGUI
@@ -159,7 +160,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     }
     private void parseMenu() {
                 try {
-            Scanner scanner = new Scanner(new File("C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\menu.txt"));
+            Scanner scanner = new Scanner(new File(MENU_PATH));
             
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -200,7 +201,7 @@ public class CustomerGUI extends javax.swing.JFrame {
 
         // Read item details from the menu.txt file and populate the table based on the item IDs in the customer's cart
         try {
-            Scanner scanner = new Scanner(new File("C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\menu.txt"));
+            Scanner scanner = new Scanner(new File(MENU_PATH));
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
