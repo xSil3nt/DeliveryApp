@@ -20,9 +20,9 @@ public class CustomerGUI extends javax.swing.JFrame {
     private DefaultTableModel model = new DefaultTableModel();
     private String[] column = {"Vendor", "ID", "Item Name", "Description", "Price"};
     Customer loggedIn;
-    private static final String MENU_PATH = "C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\menu.txt";
-    private static final String CUST_CREDS_PATH = "C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\customerCreds.txt";
-    
+    private static final String MENU_PATH = "C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\DeliveryApp\\src\\deliveryapp\\data\\menu.txt";
+    private static final String CUST_CREDS_PATH = "C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\DeliveryApp\\src\\deliveryapp\\data\\customerCreds.txt";
+
     /**
      * Creates new form CustomerGUI
      */
