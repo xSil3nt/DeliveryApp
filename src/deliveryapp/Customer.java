@@ -1,6 +1,7 @@
 package deliveryapp;
 
 import deliveryapp.Order.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -59,15 +60,27 @@ public class Customer extends User {
         return location;
     }
     
-    public int placeOrder() {
-        int orderId = 0; //Generate an orderid, something like item ids + customer id + date and b64 encode? may change this to string
+    public String placeOrder() {
+        String orderId = generateOrderId(); 
         Order newOrder = new Order(orderId, super.getUsername(), location, new Date(), cart);
         orderHistory.add(newOrder);
         cart.clear();
         return orderId;
     }
     
-    public void cancelOrder(int orderId) {
+    
+    private String generateOrderId() {
+        // Use SimpleDateFormat to format the current date and time
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String timestamp = dateFormat.format(new Date());
+
+        // Combine timestamp with customer username to create a unique order ID
+        String orderId = timestamp + super.getUsername();
+
+        return orderId;
+    }
+
+    public void cancelOrder(String orderId) {
         // Implement this method to cancel a specific order
     }
     
@@ -75,16 +88,17 @@ public class Customer extends User {
         return orderHistory;
     }
     
-    private Order findOrderById(int orderId) {
+    private Order findOrderById(String orderId) {
         for (Order order : orderHistory) {
-            if (order.getOrderId() == orderId) {
+            if (order.getOrderId().equals(orderId)) {
                 return order; // Return the order if found
             }
         }
         return null; // Return null to indicate that the order with the specified orderId was not found in orderHistory
     }
+
     
-    public int reOrder(int orderId) {
+    public int reOrder(String orderId) {
         Order originalOrder = findOrderById(orderId);
         if (originalOrder != null) {
             // Duplicate the items from the original order
@@ -98,7 +112,7 @@ public class Customer extends User {
         }
     }
     
-    public OrderStatus orderStatus(int orderId) {
+    public OrderStatus orderStatus(String orderId) {
         Order order = findOrderById(orderId);
         if (order != null) {
             return order.getStatus();
@@ -107,7 +121,7 @@ public class Customer extends User {
         }
     }
 
-    public void writeReview(int orderId, String review) {
+    public void writeReview(String orderId, String review) {
         //Implement review object?
     }
     

@@ -372,7 +372,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     }
 
     private void bt_placeOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_placeOrderActionPerformed
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_bt_placeOrderActionPerformed
 
     private void bt_setLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_setLocationActionPerformed
