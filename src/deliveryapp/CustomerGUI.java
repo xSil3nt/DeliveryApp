@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 import javax.swing.table.*;
@@ -587,7 +588,8 @@ public class CustomerGUI extends javax.swing.JFrame {
                 int selectedRow = orderTable.getSelectedRow();
                 if (selectedRow != -1) {
                     String selectedOrderId = (String) orderTable.getValueAt(selectedRow, 0);
-                    //reorderOrder(selectedOrderId);
+                    reOrder(selectedOrderId);
+                    JOptionPane.showMessageDialog(orderHistoryFrame, "Added items to cart, please place order after checking location", "Reorder", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(orderHistoryFrame, "Please select an order to reorder.", "Reorder Error", JOptionPane.WARNING_MESSAGE);
                 }
@@ -602,7 +604,7 @@ public class CustomerGUI extends javax.swing.JFrame {
                 int selectedRow = orderTable.getSelectedRow();
                 if (selectedRow != -1) {
                     String selectedOrderId = (String) orderTable.getValueAt(selectedRow, 0);
-                    //openWriteReviewWindow(selectedOrderId);
+                    //reviewWindow(selectedOrderId);
                 } else {
                     JOptionPane.showMessageDialog(orderHistoryFrame, "Please select an order to write a review.", "Write Review Error", JOptionPane.WARNING_MESSAGE);
                 }
@@ -622,7 +624,37 @@ public class CustomerGUI extends javax.swing.JFrame {
         orderHistoryFrame.pack();
         orderHistoryFrame.setLocationRelativeTo(null);
         orderHistoryFrame.setVisible(true);
-    }    
+    }
+
+    private void reOrder(String orderId) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ORDERS_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] orderDetails = line.split(";");
+
+                // Check if the order matches the logged-in username
+                if (orderDetails.length >= 1 && orderDetails[2].equals(orderId)) {
+                    // Extract specific details for display
+
+                    String cartString = orderDetails[4];
+                    System.out.println(cartString);
+                    // Remove brackets and split the string by ", "
+                    String[] elementsAsString = cartString.substring(1, cartString.length() - 1).split(", ");
+
+                    // Create an int array and parse each element individually
+                    int[] elements = new int[elementsAsString.length];
+                    loggedIn.clearCart(); // Clear cart before adding reorder items
+                    for (int i = 0; i < elementsAsString.length; i++) {
+                        elements[i] = Integer.parseInt(elementsAsString[i].trim());
+                        loggedIn.addToCart(elements[i]);
+                        updateTotal();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     private void fillOrderTable(DefaultTableModel orderModel) {
         // Read orders from the file and add matching orders to the table
