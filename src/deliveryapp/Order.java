@@ -14,8 +14,10 @@ public class Order {
     
     public enum OrderStatus {
         PENDING,
+        ACCEPTED,
         IN_PROGRESS,
-        DELIVERED,
+        ON_THE_WAY,
+        COMPLETED,
         CANCELED,
         UNKNOWN
     }
@@ -39,8 +41,20 @@ public class Order {
         this.status = OrderStatus.PENDING; // Initialize as pending
         
     }
+    
+    // Overload constructor to create order objects from file
+    public Order(String orderId, String customerUsername, String deliveryLocation, Date orderDate, ArrayList<Integer> cart, OrderStatus status) {
+        this.orderId = orderId;
+        this.customerUsername = customerUsername;
+        this.deliveryLocation = deliveryLocation;
+        this.orderDate = orderDate;
+        this.cart = cart;
+        this.totalAmount = calculateTotalAmount();
+        this.status = status;
+        
+    }
 
-    // Getters and Setters for order attributes
+    
 
     public String getOrderId() {
         return orderId;
@@ -59,7 +73,7 @@ public class Order {
     }
 
     public ArrayList<Integer> getCart() {
-        return this.cart;
+        return cart;
     }
 
     public double getTotalAmount() {

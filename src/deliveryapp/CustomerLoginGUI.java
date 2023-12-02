@@ -15,8 +15,7 @@ import javax.swing.*;
  * @author Shazin
  */ 
 public class CustomerLoginGUI extends javax.swing.JFrame {
-    private static final String CUST_CREDS_PATH = "C:\\Users\\Shazin\\OneDrive - Asia Pacific University\\University\\Year 2\\Java\\Assignment\\DeliveryApp\\src\\deliveryapp\\data\\customerCreds.txt";
-
+    private static final String CUST_CREDS_PATH = "programData\\customerCreds.txt";
     /**
      * Creates new form CustomerLoginGUI
      */
@@ -103,6 +102,7 @@ public class CustomerLoginGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bt_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_loginActionPerformed
+        boolean success = false;
         try {
             Scanner scanner = new Scanner(new File(CUST_CREDS_PATH));
             
@@ -110,7 +110,7 @@ public class CustomerLoginGUI extends javax.swing.JFrame {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
 
-                if (parts.length == 4) { // Ensure there are four components in the line
+                if (parts.length == 5) { 
                     String storedUsername = parts[0];
                     String storedPassword = parts[1];
 
@@ -118,6 +118,9 @@ public class CustomerLoginGUI extends javax.swing.JFrame {
                         // Username and password match
                         int balance = Integer.parseInt(parts[2]);
                         String location = parts[3];
+                        String phone = parts[4];
+                        
+                        success = true; // Mark success
                         
                         //Close scanner since we've found what we need
                         scanner.close();
@@ -125,22 +128,19 @@ public class CustomerLoginGUI extends javax.swing.JFrame {
                         
                         // Pass details to CustomerGUI
                         dispose();
-                        new CustomerGUI(storedUsername, storedPassword, balance, location).setVisible(true);
-
+                        new CustomerGUI(storedUsername, storedPassword, balance, location, phone).setVisible(true);
+                        
                         break;
 
-                        
-                        
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Login failed. Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
-                        
-                        //Close scanner
-                        scanner.close();
-                        break;
                     }
                 }
             }
-            // Close the scanner when done reading
+            if (success == false) {
+                JOptionPane.showMessageDialog(null, "Login failed. Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            }   
+            //Close scanner
+            scanner.close();
+                        
             
 
         } catch (FileNotFoundException ex) {

@@ -10,12 +10,20 @@ public class Customer extends User {
     private double balance;
     private ArrayList<Integer> cart = new ArrayList<>(); // List of item IDs in the cart
     private ArrayList<Order> orderHistory = new ArrayList<>(); // List of orders
+    private String phone;
     
     public Customer(String username, String password, double balance) {
         super(username, password, 2); // Usertype 2 is for customer
         this.balance = balance;
     }
     
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    
+    public String getPhone() {
+        return phone;
+    }
 
     public double getBalance() {
         return balance;

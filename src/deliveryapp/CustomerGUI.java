@@ -27,15 +27,18 @@ public class CustomerGUI extends javax.swing.JFrame {
     /**
      * Creates new form CustomerGUI
      */
-    public CustomerGUI(String username, String password, int balance, String location) {
+    public CustomerGUI(String username, String password, int balance, String location, String phone) {
         initComponents();
         loggedIn = new Customer(username, password, balance);
         loggedIn.setLocation(location);
+        loggedIn.setPhone(phone);
         lb_welcome.setText("Welcome "+loggedIn.getUsername());
         lb_location.setText(loggedIn.getLocation());
         lb_balance.setText(Double.toString(loggedIn.getBalance()));
+        lb_phone.setText(loggedIn.getPhone());
         
         model.setColumnIdentifiers(column);
+        adjustColumnWidths();
         parseMenu();
         
         
@@ -47,9 +50,11 @@ public class CustomerGUI extends javax.swing.JFrame {
         model.setColumnIdentifiers(column);
         loggedIn = new Customer("Shazin","123",100);
         loggedIn.setLocation("A-5-3");
+        loggedIn.setPhone("+61252");
         lb_welcome.setText("Welcome "+loggedIn.getUsername());
         lb_location.setText(loggedIn.getLocation());
         lb_balance.setText(Double.toString(loggedIn.getBalance()));
+        lb_phone.setText(loggedIn.getPhone());
         adjustColumnWidths();
         parseMenu();
     }
@@ -77,6 +82,8 @@ public class CustomerGUI extends javax.swing.JFrame {
         lb_location = new javax.swing.JLabel();
         lb_balanceLabel = new javax.swing.JLabel();
         lb_balance = new javax.swing.JLabel();
+        lb_phoneLabel = new javax.swing.JLabel();
+        lb_phone = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -127,9 +134,13 @@ public class CustomerGUI extends javax.swing.JFrame {
 
         lb_location.setText("Auditorium 3, level 4");
 
-        lb_balanceLabel.setText("Balance");
+        lb_balanceLabel.setText("Balance:");
 
         lb_balance.setText("1000.0");
+
+        lb_phoneLabel.setText("Phone:");
+
+        lb_phone.setText("+6025252525252");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -143,13 +154,16 @@ public class CustomerGUI extends javax.swing.JFrame {
                             .addComponent(lb_welcome, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lb_locationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lb_balanceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lb_locationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lb_balanceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lb_phoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lb_location, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lb_balance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(lb_balance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lb_phone, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
@@ -173,15 +187,20 @@ public class CustomerGUI extends javax.swing.JFrame {
                         .addGap(11, 11, 11)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lb_phoneLabel)
+                            .addComponent(lb_phone))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lb_balanceLabel)
                             .addComponent(lb_balance))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lb_welcome)
-                    .addComponent(lb_locationLabel)
-                    .addComponent(lb_location))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lb_locationLabel)
+                        .addComponent(lb_location)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -374,8 +393,10 @@ public class CustomerGUI extends javax.swing.JFrame {
 
     private void bt_placeOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_placeOrderActionPerformed
        String placedOrderId = loggedIn.placeOrder();
-       System.out.println(placedOrderId);
        Order placedOrder = loggedIn.findOrderById(placedOrderId);
+       
+       
+       
        System.out.println(placedOrder.getCustomerUsername());
        System.out.println(placedOrder.getOrderDate());
        System.out.println(placedOrder.getCart());
@@ -488,6 +509,8 @@ public class CustomerGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lb_balanceLabel;
     private javax.swing.JLabel lb_location;
     private javax.swing.JLabel lb_locationLabel;
+    private javax.swing.JLabel lb_phone;
+    private javax.swing.JLabel lb_phoneLabel;
     private javax.swing.JLabel lb_welcome;
     private javax.swing.JTable tb_menu;
     // End of variables declaration//GEN-END:variables
