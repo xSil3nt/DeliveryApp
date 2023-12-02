@@ -1,8 +1,12 @@
 package deliveryapp;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -20,7 +24,7 @@ public class Order {
     private String customerUsername;
     private String deliveryLocation;
     private Date orderDate;
-    private ArrayList<Integer> cart; // List of item IDs in the order
+    private ArrayList<Integer> cart; 
     private double totalAmount;
     private OrderStatus status;
     private static final String MENU_PATH = "programData\\menu.txt";
@@ -33,6 +37,7 @@ public class Order {
         this.cart = cart;
         this.totalAmount = calculateTotalAmount();
         this.status = OrderStatus.PENDING; // Initialize as pending
+        
     }
 
     // Getters and Setters for order attributes
@@ -54,7 +59,7 @@ public class Order {
     }
 
     public ArrayList<Integer> getCart() {
-        return cart;
+        return this.cart;
     }
 
     public double getTotalAmount() {
@@ -110,5 +115,41 @@ public class Order {
     public void cancelOrder() {
         status = OrderStatus.CANCELED;
     }
+    
+    public static String getVendor(ArrayList<Integer> cart) {
+        if (cart == null || cart.isEmpty()) {
+            // Handle the case where the cart is empty
+            return null;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(MENU_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] vendorAndItems = line.split(";", 2);
+                String vendor = vendorAndItems[0];
+                String items = vendorAndItems[1];
+
+                // Split the items into individual item details
+                String[] itemDetails = items.split(";");
+
+                // Get the first item ID from the cart
+                int firstItemId = cart.get(0);
+
+                // Iterate through itemDetails to find the vendor for the first item in the cart
+                for (String itemDetail : itemDetails) {
+                    String[] itemInfo = itemDetail.split("\\|");
+                    if (itemInfo.length > 0 && Integer.parseInt(itemInfo[0]) == firstItemId) {
+                        return vendor; // Found the vendor for the first item in the cart
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the IOException according to your needs
+        }
+
+        // Return null if the vendor is not found for the first item in the cart
+        return null;
+    }
+
 }
 

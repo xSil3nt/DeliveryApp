@@ -62,7 +62,8 @@ public class Customer extends User {
     
     public String placeOrder() {
         String orderId = generateOrderId(); 
-        Order newOrder = new Order(orderId, super.getUsername(), location, new Date(), cart);
+        ArrayList<Integer> tempCart = new ArrayList<Integer>(cart);
+        Order newOrder = new Order(orderId, super.getUsername(), location, new Date(), tempCart);
         orderHistory.add(newOrder);
         cart.clear();
         return orderId;
@@ -80,15 +81,12 @@ public class Customer extends User {
         return orderId;
     }
 
-    public void cancelOrder(String orderId) {
-        // Implement this method to cancel a specific order
-    }
     
     public ArrayList<Order> viewOrders() {
         return orderHistory;
     }
     
-    private Order findOrderById(String orderId) {
+    public Order findOrderById(String orderId) {
         for (Order order : orderHistory) {
             if (order.getOrderId().equals(orderId)) {
                 return order; // Return the order if found

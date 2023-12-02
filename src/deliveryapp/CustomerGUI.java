@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.table.*;
 import javax.swing.*;
@@ -372,7 +373,16 @@ public class CustomerGUI extends javax.swing.JFrame {
     }
 
     private void bt_placeOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_placeOrderActionPerformed
-       
+       String placedOrderId = loggedIn.placeOrder();
+       System.out.println(placedOrderId);
+       Order placedOrder = loggedIn.findOrderById(placedOrderId);
+       System.out.println(placedOrder.getCustomerUsername());
+       System.out.println(placedOrder.getOrderDate());
+       System.out.println(placedOrder.getCart());
+       System.out.println(placedOrder.getDeliveryLocation());       
+       System.out.println(placedOrder.getTotalAmount());
+       System.out.println(placedOrder.getStatus());
+       System.out.println(placedOrder.getVendor(placedOrder.getCart()));
     }//GEN-LAST:event_bt_placeOrderActionPerformed
 
     private void bt_setLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_setLocationActionPerformed
@@ -405,7 +415,7 @@ public class CustomerGUI extends javax.swing.JFrame {
                     String currentLocation = parts[3];
 
                     // Assuming the username is "Shazin" based on your example
-                    if (username.equals("Shazin")) {
+                    if (username.equals(loggedIn.getUsername())) {
                         // Update the location for the specific user
                         currentLocation = newLocation;
                     }
