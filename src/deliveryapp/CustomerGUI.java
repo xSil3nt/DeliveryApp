@@ -366,6 +366,7 @@ public class CustomerGUI extends javax.swing.JFrame {
                     int itemId = (int) cartTable.getValueAt(row, 0);
                     loggedIn.removeFromCart(itemId);
                     cartTableModel.removeRow(row);
+                    updateTotal();
                 }
             }
         });
@@ -401,9 +402,8 @@ public class CustomerGUI extends javax.swing.JFrame {
         if (loggedIn.getCart().isEmpty() || isItemFromSameVendor(selectedVendor)) {
             // Add the item to the customer's cart
             loggedIn.addToCart(itemId);
-            
-            double total = calcCartTotal();
-            lb_total.setText(String.valueOf(total));
+            updateTotal();
+
 
             // Show msg to indicate success
             JOptionPane.showMessageDialog(this, "Item added to the cart.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -413,6 +413,11 @@ public class CustomerGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bt_addToCartActionPerformed
 
+    private void updateTotal() {
+            double total = calcCartTotal();
+            lb_total.setText(String.valueOf(total));
+    }
+    
     private double getItemPrice(int itemId) {
        try {
             Scanner scanner = new Scanner(new File(MENU_PATH));
