@@ -430,6 +430,11 @@ public class CustomerGUI extends javax.swing.JFrame {
 
     private void updateTotal() {
             double total = calcCartTotal();
+            if (loggedIn.getCart().isEmpty()) {
+                total = 0;
+            } else if (!(lb_location.getText().equals("Self Pickup/Dine In"))) {
+                total = total + 2;
+            }
             lb_total.setText(String.valueOf(total));
     }
     
@@ -459,7 +464,6 @@ public class CustomerGUI extends javax.swing.JFrame {
     private double calcCartTotal() {
         double total = 0.0;
         // Calculate the total amount based on the item IDs in the cart
-        // Get price list from menu and sum up everything
         for (int itemId : loggedIn.getCart()) {
             double itemPrice = getItemPrice(itemId);
             total += itemPrice;
@@ -501,16 +505,8 @@ public class CustomerGUI extends javax.swing.JFrame {
         if (placedOrderId != null) {
             // Order placed successfully
             Order placedOrder = loggedIn.findOrderById(placedOrderId);
-            
-            System.out.println(placedOrder.getOrderId());
-            System.out.println(placedOrder.getCustomerUsername());
-            System.out.println(placedOrder.getOrderDate());
-            System.out.println(placedOrder.getCart());
-            System.out.println(placedOrder.getDeliveryLocation());
-            System.out.println(placedOrder.getTotalAmount());
-            System.out.println(placedOrder.getStatus());
-            System.out.println(placedOrder.getVendor(placedOrder.getCart()));
-            
+
+            // Store order info in file
             storeOrderDetails(placedOrder);
 
 
@@ -622,7 +618,6 @@ public class CustomerGUI extends javax.swing.JFrame {
         orderTable.getColumnModel().getColumn(4).setPreferredWidth(250);
         orderTable.getColumnModel().getColumn(5).setPreferredWidth(40);
         orderTable.getColumnModel().getColumn(6).setPreferredWidth(100);
-        
         orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         orderHistoryFrame.pack();
         orderHistoryFrame.setLocationRelativeTo(null);
@@ -764,7 +759,7 @@ public class CustomerGUI extends javax.swing.JFrame {
 
         // Create buttons for OK and Self Pickup
         JButton okButton = new JButton("OK");
-        JButton selfPickupButton = new JButton("Self Pickup");
+        JButton selfPickupButton = new JButton("Self Pickup/Dine in");
         panel.add(okButton);
         panel.add(selfPickupButton);
 
@@ -787,7 +782,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         selfPickupButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateLocationFile("Self Pickup");
+                updateLocationFile("Self Pickup/Dine In");
                 dialog.dispose(); // Close the dialog
             }
         });
