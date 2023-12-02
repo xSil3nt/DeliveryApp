@@ -1,5 +1,8 @@
 package deliveryapp;
 
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,6 +35,15 @@ public class CustomerGUI extends javax.swing.JFrame {
         loggedIn = new Customer(username, password, balance);
         loggedIn.setLocation(location);
         loggedIn.setPhone(phone);
+        
+        //If details are missing, ask for them
+        if (location == "") {
+            updateCustomerLocation();
+        }
+        if (phone == "") {
+            updateCustomerPhone();
+        }
+
         lb_welcome.setText("Welcome "+loggedIn.getUsername());
         lb_location.setText(loggedIn.getLocation());
         lb_balance.setText(Double.toString(loggedIn.getBalance()));
@@ -57,6 +69,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         lb_phone.setText(loggedIn.getPhone());
         adjustColumnWidths();
         parseMenu();
+        
     }
 
     /**
@@ -84,6 +97,9 @@ public class CustomerGUI extends javax.swing.JFrame {
         lb_balance = new javax.swing.JLabel();
         lb_phoneLabel = new javax.swing.JLabel();
         lb_phone = new javax.swing.JLabel();
+        bt_setPhone = new javax.swing.JButton();
+        lb_totalLabel = new javax.swing.JLabel();
+        lb_total = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -142,6 +158,17 @@ public class CustomerGUI extends javax.swing.JFrame {
 
         lb_phone.setText("+6025252525252");
 
+        bt_setPhone.setText("Set Phone");
+        bt_setPhone.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_setPhoneActionPerformed(evt);
+            }
+        });
+
+        lb_totalLabel.setText("Cart Total:");
+
+        lb_total.setText("0");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -159,66 +186,80 @@ public class CustomerGUI extends javax.swing.JFrame {
                                 .addComponent(lb_locationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(lb_balanceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lb_phoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lb_location, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lb_balance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lb_phone, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(lb_phone, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(41, 41, 41))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(bt_cart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(bt_orders, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(bt_setLocation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(bt_reviews, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(bt_placeOrder, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(bt_addToCart, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(32, 32, 32))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(bt_cart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(bt_orders, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(bt_setLocation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(bt_reviews, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(bt_setPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(bt_addToCart, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(bt_placeOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(1, 1, 1)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(lb_totalLabel)
+                                .addGap(18, 18, 18)
+                                .addComponent(lb_total, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(27, 27, 27))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14)
+                        .addComponent(lb_welcome))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lb_phoneLabel)
                             .addComponent(lb_phone))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lb_balanceLabel)
-                            .addComponent(lb_balance))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lb_welcome)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lb_locationLabel)
-                        .addComponent(lb_location)))
+                            .addComponent(lb_balance))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lb_locationLabel)
+                            .addComponent(lb_location))))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(23, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bt_orders)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(bt_cart)
                         .addGap(18, 18, 18)
                         .addComponent(bt_setLocation)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(7, 7, 7)
+                        .addComponent(bt_setPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bt_reviews)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(59, 59, 59)
                         .addComponent(bt_addToCart)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lb_totalLabel)
+                            .addComponent(lb_total))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bt_placeOrder)
-                        .addGap(58, 58, 58))))
+                        .addGap(12, 12, 12))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
@@ -360,6 +401,9 @@ public class CustomerGUI extends javax.swing.JFrame {
         if (loggedIn.getCart().isEmpty() || isItemFromSameVendor(selectedVendor)) {
             // Add the item to the customer's cart
             loggedIn.addToCart(itemId);
+            
+            double total = calcCartTotal();
+            lb_total.setText(String.valueOf(total));
 
             // Show msg to indicate success
             JOptionPane.showMessageDialog(this, "Item added to the cart.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -369,6 +413,40 @@ public class CustomerGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bt_addToCartActionPerformed
 
+    private double getItemPrice(int itemId) {
+       try {
+            Scanner scanner = new Scanner(new File(MENU_PATH));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(";");
+                for (int i = 1; i < parts.length; i++) {
+                    String[] itemDetails = parts[i].split("\\|");
+                    if (itemDetails.length == 4) {
+                        int currentItemId = Integer.parseInt(itemDetails[0]);
+                        if (currentItemId == itemId) {
+                            return Double.parseDouble(itemDetails[3]);
+                        }
+                    }
+                }
+            }
+            scanner.close();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+    
+    private double calcCartTotal() {
+        double total = 0.0;
+        // Calculate the total amount based on the item IDs in the cart
+        // Get price list from menu and sum up everything
+        for (int itemId : loggedIn.getCart()) {
+            double itemPrice = getItemPrice(itemId);
+            total += itemPrice;
+        }
+        return total;
+    }
+    
     private boolean isItemFromSameVendor(String selectedVendor) {
         // Check if the items in the cart are from the same vendor
         for (int itemId : loggedIn.getCart()) {
@@ -407,19 +485,23 @@ public class CustomerGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_placeOrderActionPerformed
 
     private void bt_setLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_setLocationActionPerformed
-        // Display an input dialog prompting the user to enter a location
-        String userInput = JOptionPane.showInputDialog(this, "Enter your Delivery Location:");
-
-        // Check if the user pressed "OK" and entered a location
-        if (userInput != null && !userInput.trim().isEmpty()) {
-            loggedIn.setLocation(userInput);
-            lb_location.setText(loggedIn.getLocation());
-            updateCustomerLocation(userInput);
-        }
+        updateCustomerLocation();
     }//GEN-LAST:event_bt_setLocationActionPerformed
 
-    private void updateCustomerLocation(String newLocation) {
-        try {
+    private void bt_setPhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_setPhoneActionPerformed
+        updateCustomerPhone();
+    }//GEN-LAST:event_bt_setPhoneActionPerformed
+
+    private void updateCustomerPhone() {
+        // Display an input dialog prompting the user to enter a location
+        String newPhone = JOptionPane.showInputDialog(this, "Enter your phone number: ");
+
+        // Check if the user pressed "OK" and entered a location
+        if (newPhone != null && !newPhone.trim().isEmpty()) {
+            loggedIn.setPhone(newPhone);
+            lb_phone.setText(loggedIn.getPhone());
+            
+            try {
             // Read the content of the file
             File file = new File(CUST_CREDS_PATH);
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -429,20 +511,20 @@ public class CustomerGUI extends javax.swing.JFrame {
             // Iterate through the lines, update the location, and build the new content
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
-                if (parts.length == 4) {
+                if (parts.length == 5) {
                     String username = parts[0];
                     String password = parts[1];
                     String balance = parts[2];
-                    String currentLocation = parts[3];
-
-                    // Assuming the username is "Shazin" based on your example
+                    String location = parts[3];
+                    String currentPhone = parts[4];
+                    
                     if (username.equals(loggedIn.getUsername())) {
                         // Update the location for the specific user
-                        currentLocation = newLocation;
+                        currentPhone = newPhone;
                     }
 
                     // Reconstruct the line with the updated information
-                    String updatedLine = username + ";" + password + ";" + balance + ";" + currentLocation;
+                    String updatedLine = username + ";" + password + ";" + balance + ";" + location + ";" + currentPhone;
                     content.append(updatedLine).append("\n");
                 }
             }
@@ -459,7 +541,101 @@ public class CustomerGUI extends javax.swing.JFrame {
             e.printStackTrace();
             System.out.println("Error updating customer location.");
         }
-}
+        }
+    }
+    
+    private void updateCustomerLocation() {
+        // Create a panel to hold components
+        JPanel panel = new JPanel(new FlowLayout());
+
+        // Create a text field for the user to enter a new location
+        JTextField locationTextField = new JTextField(20);
+        panel.add(new JLabel("Enter your Delivery Location:"));
+        panel.add(locationTextField);
+
+        // Create buttons for OK and Self Pickup
+        JButton okButton = new JButton("OK");
+        JButton selfPickupButton = new JButton("Self Pickup");
+        panel.add(okButton);
+        panel.add(selfPickupButton);
+
+        // Create a dialog with the panel
+        JDialog dialog = new JDialog();
+        dialog.add(panel);
+        dialog.pack();
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        // ActionListener for OK button
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateLocationFile(locationTextField.getText());
+                dialog.dispose(); // Close the dialog
+            }
+        });
+
+        // ActionListener for Self Pickup button
+        selfPickupButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateLocationFile("Self Pickup");
+                dialog.dispose(); // Close the dialog
+            }
+        });
+
+        // Show the dialog
+        dialog.setVisible(true);
+    }
+    
+    
+    private void updateLocationFile(String newLocation) {
+        // Handle the location update logic
+        if (newLocation != null && !newLocation.trim().isEmpty()) {
+            loggedIn.setLocation(newLocation);
+            lb_location.setText(loggedIn.getLocation());
+
+            try {
+                // Read the content of the file
+                File file = new File(CUST_CREDS_PATH);
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                StringBuilder content = new StringBuilder();
+                String line;
+
+                // Iterate through the lines, update the location, and build the new content
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(";");
+                    if (parts.length == 5) {
+                        String username = parts[0];
+                        String password = parts[1];
+                        String balance = parts[2];
+                        String currentLocation = parts[3];
+                        String phone = parts[4];
+
+                        if (username.equals(loggedIn.getUsername())) {
+                            // Update the location for the specific user
+                            currentLocation = newLocation;
+                        }
+
+                        // Reconstruct the line with the updated information
+                        String updatedLine = username + ";" + password + ";" + balance + ";" + currentLocation + ";" + phone;
+                        content.append(updatedLine).append("\n");
+                    }
+                }
+
+                // Close the reader
+                reader.close();
+
+                // Write the updated content back to the file
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                writer.write(content.toString());
+                writer.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error updating customer location.");
+            }
+        }
+    }
     
     /**
      * @param args the command line arguments
@@ -503,6 +679,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     private javax.swing.JButton bt_placeOrder;
     private javax.swing.JButton bt_reviews;
     private javax.swing.JButton bt_setLocation;
+    private javax.swing.JButton bt_setPhone;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lb_balance;
@@ -511,6 +688,8 @@ public class CustomerGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lb_locationLabel;
     private javax.swing.JLabel lb_phone;
     private javax.swing.JLabel lb_phoneLabel;
+    private javax.swing.JLabel lb_total;
+    private javax.swing.JLabel lb_totalLabel;
     private javax.swing.JLabel lb_welcome;
     private javax.swing.JTable tb_menu;
     // End of variables declaration//GEN-END:variables
