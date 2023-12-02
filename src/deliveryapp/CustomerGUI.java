@@ -1,5 +1,6 @@
 package deliveryapp;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +26,7 @@ import javax.swing.*;
  */
 public class CustomerGUI extends javax.swing.JFrame {
     private DefaultTableModel model = new DefaultTableModel();
+    
     private String[] column = {"Vendor", "ID", "Item Name", "Description", "Price"};
     Customer loggedIn;
     private static final String CUST_CREDS_PATH = "programData\\customerCreds.txt";
@@ -54,7 +56,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         lb_phone.setText(loggedIn.getPhone());
         
         model.setColumnIdentifiers(column);
-        adjustColumnWidths();
+        adjustMenuTable();
         parseMenu();
         
         
@@ -71,7 +73,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         lb_location.setText(loggedIn.getLocation());
         lb_balance.setText(Double.toString(loggedIn.getBalance()));
         lb_phone.setText(loggedIn.getPhone());
-        adjustColumnWidths();
+        adjustMenuTable();
         parseMenu();
         
     }
@@ -273,9 +275,12 @@ public class CustomerGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void adjustColumnWidths() {
+    
+    private void adjustMenuTable() {
         TableColumnModel columnModel = tb_menu.getColumnModel();
-
+        tb_menu.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tb_menu.setRowSelectionAllowed(true);
+        tb_menu.setColumnSelectionAllowed(false);
         // Set the preferred width for specific columns
         columnModel.getColumn(0).setPreferredWidth(100); // Vendor column
         columnModel.getColumn(1).setPreferredWidth(30); // ID column
@@ -283,8 +288,9 @@ public class CustomerGUI extends javax.swing.JFrame {
         columnModel.getColumn(3).setPreferredWidth(250); // Desc column
         columnModel.getColumn(4).setPreferredWidth(30); // Price column
     }
+    
     private void parseMenu() {
-                try {
+        try {
             Scanner scanner = new Scanner(new File(MENU_PATH));
             
             while (scanner.hasNextLine()) {
@@ -608,6 +614,16 @@ public class CustomerGUI extends javax.swing.JFrame {
         });
 
         // Pack and center the JFrame
+        orderHistoryFrame.setPreferredSize(new Dimension(orderHistoryFrame.getWidth() + 1000, orderHistoryFrame.getHeight()+500));
+        orderTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+        orderTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+        orderTable.getColumnModel().getColumn(2).setPreferredWidth(120);
+        orderTable.getColumnModel().getColumn(3).setPreferredWidth(100);
+        orderTable.getColumnModel().getColumn(4).setPreferredWidth(250);
+        orderTable.getColumnModel().getColumn(5).setPreferredWidth(40);
+        orderTable.getColumnModel().getColumn(6).setPreferredWidth(100);
+        
+        orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         orderHistoryFrame.pack();
         orderHistoryFrame.setLocationRelativeTo(null);
         orderHistoryFrame.setVisible(true);
@@ -626,11 +642,13 @@ public class CustomerGUI extends javax.swing.JFrame {
                     String vendor = orderDetails[1];
                     String orderID = orderDetails[2];
                     String date = orderDetails[3];
-                    String cart = orderDetails[4];
+                    String cartList = orderDetails[4];
                     String location = orderDetails[5];
                     String total = orderDetails[6];
                     String status = orderDetails[7];
-                    
+                    String cart = (mapIdsToNames(cartList)).toString();
+                    cart = cart.substring(1, cart.length() - 1);
+
                     try {
                             SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                             Date tempDate = originalFormat.parse(date);
@@ -651,6 +669,38 @@ public class CustomerGUI extends javax.swing.JFrame {
         }
     }
     
+    private ArrayList<String> mapIdsToNames(String cartList) {
+        ArrayList<String> cartNames = new ArrayList<>();
+        try {
+            Scanner scanner = new Scanner(new File(MENU_PATH));
+
+            while (scanner.hasNextLine()) {
+                String menuLine = scanner.nextLine();
+                String[] parts = menuLine.split(";");
+
+                for (int i = 1; i < parts.length; i++) {
+                    String[] itemDetails = parts[i].split("\\|");
+
+                    if (itemDetails.length == 4) {
+                        int itemId = Integer.parseInt(itemDetails[0]);
+                        String itemName = itemDetails[1].trim();
+
+                        // Check if the itemId is present in the cartList
+                        if (cartList.contains(Integer.toString(itemId))) {
+                            cartNames.add(itemName);
+                        }
+                    }
+                }
+            }
+
+            scanner.close();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        return cartNames;
+    }    
+
     private void updateCustomerPhone() {
         // Display an input dialog prompting the user to enter a location
         String newPhone = JOptionPane.showInputDialog(this, "Enter your phone number: ");
