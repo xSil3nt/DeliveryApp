@@ -10,7 +10,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 import javax.swing.table.*;
 import javax.swing.*;
@@ -26,6 +29,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     Customer loggedIn;
     private static final String CUST_CREDS_PATH = "programData\\customerCreds.txt";
     private static final String MENU_PATH = "programData\\menu.txt";
+    private static final String ORDERS_PATH = "programData\\orders.txt";
 
     /**
      * Creates new form CustomerGUI
@@ -114,6 +118,11 @@ public class CustomerGUI extends javax.swing.JFrame {
         });
 
         bt_orders.setText("Orders");
+        bt_orders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_ordersActionPerformed(evt);
+            }
+        });
 
         tb_menu.setModel(model);
         tb_menu.setColumnSelectionAllowed(true);
@@ -475,20 +484,59 @@ public class CustomerGUI extends javax.swing.JFrame {
     }
 
     private void bt_placeOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_placeOrderActionPerformed
-       String placedOrderId = loggedIn.placeOrder();
-       Order placedOrder = loggedIn.findOrderById(placedOrderId);
-       
-       
-       
-       System.out.println(placedOrder.getCustomerUsername());
-       System.out.println(placedOrder.getOrderDate());
-       System.out.println(placedOrder.getCart());
-       System.out.println(placedOrder.getDeliveryLocation());       
-       System.out.println(placedOrder.getTotalAmount());
-       System.out.println(placedOrder.getStatus());
-       System.out.println(placedOrder.getVendor(placedOrder.getCart()));
+        ArrayList<Integer> cart = loggedIn.getCart();
+
+        if (cart == null || cart.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Your cart is empty. Please add items before placing an order.", "Empty Cart", JOptionPane.WARNING_MESSAGE);
+            return; // Do not proceed with placing the order
+        }
+
+        String placedOrderId = loggedIn.placeOrder();
+        if (placedOrderId != null) {
+            // Order placed successfully
+            Order placedOrder = loggedIn.findOrderById(placedOrderId);
+            
+            System.out.println(placedOrder.getOrderId());
+            System.out.println(placedOrder.getCustomerUsername());
+            System.out.println(placedOrder.getOrderDate());
+            System.out.println(placedOrder.getCart());
+            System.out.println(placedOrder.getDeliveryLocation());
+            System.out.println(placedOrder.getTotalAmount());
+            System.out.println(placedOrder.getStatus());
+            System.out.println(placedOrder.getVendor(placedOrder.getCart()));
+            
+            storeOrderDetails(placedOrder);
+
+
+            // Display success dialog box
+            JOptionPane.showMessageDialog(this, "Order placed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            // Failed to place the order
+            JOptionPane.showMessageDialog(this, "Failed to place the order. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_bt_placeOrderActionPerformed
 
+    private void storeOrderDetails(Order order) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ORDERS_PATH, true))) {
+            // Format the order details
+            String orderDetails = String.format("%s;%s;%s;%s;%s;%s;%s;%s;%n",
+                    order.getCustomerUsername(),
+                    order.getVendor(order.getCart()),
+                    order.getOrderId(),
+                    order.getOrderDate(),
+                    order.getCart(),
+                    order.getDeliveryLocation(),
+                    order.getTotalAmount(),
+                    order.getStatus());
+
+            // Write the order details to the file
+            writer.write(orderDetails);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error storing order details.");
+        }
+    }
+    
     private void bt_setLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_setLocationActionPerformed
         updateCustomerLocation();
     }//GEN-LAST:event_bt_setLocationActionPerformed
@@ -497,6 +545,112 @@ public class CustomerGUI extends javax.swing.JFrame {
         updateCustomerPhone();
     }//GEN-LAST:event_bt_setPhoneActionPerformed
 
+    private void bt_ordersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_ordersActionPerformed
+        showOrderHistory();
+    }//GEN-LAST:event_bt_ordersActionPerformed
+
+    private void showOrderHistory() {
+        // Create JFrame for order history
+        JFrame orderHistoryFrame = new JFrame("Order History");
+        orderHistoryFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        // Create JPanel for buttons
+        JPanel buttonPanel = new JPanel();
+        JButton reorderButton = new JButton("Reorder");
+        JButton writeReviewButton = new JButton("Write Review");
+        buttonPanel.add(reorderButton);
+        buttonPanel.add(writeReviewButton);
+
+        // Create JTable
+        String[] columnNames = {"OrderID", "Vendor", "Date", "Location", "Cart", "Total", "Status"};
+        DefaultTableModel orderModel = new DefaultTableModel(columnNames, 0);
+        JTable orderTable = new JTable(orderModel);
+        JScrollPane scrollPane = new JScrollPane(orderTable);
+        
+        fillOrderTable(orderModel);
+
+        // Create a vertical BoxLayout for the JFrame
+        Box verticalBox = Box.createVerticalBox();
+        verticalBox.add(buttonPanel);
+        verticalBox.add(scrollPane);
+
+        // Add the Box to the JFrame
+        orderHistoryFrame.getContentPane().add(verticalBox);
+
+        // ActionListener for Reorder button
+        reorderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected row and reorder the selected order
+                int selectedRow = orderTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    String selectedOrderId = (String) orderTable.getValueAt(selectedRow, 0);
+                    //reorderOrder(selectedOrderId);
+                } else {
+                    JOptionPane.showMessageDialog(orderHistoryFrame, "Please select an order to reorder.", "Reorder Error", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        // ActionListener for Write Review button
+        writeReviewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected row and open a window to write a review for the selected order
+                int selectedRow = orderTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    String selectedOrderId = (String) orderTable.getValueAt(selectedRow, 0);
+                    //openWriteReviewWindow(selectedOrderId);
+                } else {
+                    JOptionPane.showMessageDialog(orderHistoryFrame, "Please select an order to write a review.", "Write Review Error", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        // Pack and center the JFrame
+        orderHistoryFrame.pack();
+        orderHistoryFrame.setLocationRelativeTo(null);
+        orderHistoryFrame.setVisible(true);
+    }    
+    
+    private void fillOrderTable(DefaultTableModel orderModel) {
+        // Read orders from the file and add matching orders to the table
+        try (BufferedReader reader = new BufferedReader(new FileReader(ORDERS_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] orderDetails = line.split(";");
+
+                // Check if the order matches the logged-in username
+                if (orderDetails.length >= 1 && orderDetails[0].equals(loggedIn.getUsername())) {
+                    // Extract specific details for display
+                    String vendor = orderDetails[1];
+                    String orderID = orderDetails[2];
+                    String date = orderDetails[3];
+                    String cart = orderDetails[4];
+                    String location = orderDetails[5];
+                    String total = orderDetails[6];
+                    String status = orderDetails[7];
+                    
+                    try {
+                            SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                            Date tempDate = originalFormat.parse(date);
+
+                            SimpleDateFormat newFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                            date = newFormat.format(tempDate);
+                    } catch (ParseException e) {
+                            e.printStackTrace();
+                    }                    
+                    
+
+                    // Add the extracted details to the table model
+                    orderModel.addRow(new String[]{orderID, vendor, date, location, cart, total, status});
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     private void updateCustomerPhone() {
         // Display an input dialog prompting the user to enter a location
         String newPhone = JOptionPane.showInputDialog(this, "Enter your phone number: ");

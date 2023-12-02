@@ -21,6 +21,7 @@ public class Customer extends User {
         this.phone = phone;
     }
     
+
     public String getPhone() {
         return phone;
     }
