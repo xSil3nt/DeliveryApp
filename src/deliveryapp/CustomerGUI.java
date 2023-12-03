@@ -1,5 +1,6 @@
 package deliveryapp;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -127,6 +128,11 @@ public class CustomerGUI extends javax.swing.JFrame {
         tb_menu.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         bt_reviews.setText("Reviews");
+        bt_reviews.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_reviewsActionPerformed(evt);
+            }
+        });
 
         bt_addToCart.setText("Add to cart");
         bt_addToCart.addActionListener(new java.awt.event.ActionListener() {
@@ -547,6 +553,72 @@ public class CustomerGUI extends javax.swing.JFrame {
         showOrderHistory();
     }//GEN-LAST:event_bt_ordersActionPerformed
 
+    private void bt_reviewsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_reviewsActionPerformed
+        displayReviews();
+    }//GEN-LAST:event_bt_reviewsActionPerformed
+
+        private void displayReviews() {
+        // Create the table model
+        DefaultTableModel reviewTableModel = new DefaultTableModel(new Object[]{"Customer", "Vendor", "Date", "Items", "Review"}, 0);
+
+        // Parse and add reviews to the table model
+        parseReviews(reviewTableModel);
+
+        // Create the table
+        JTable reviewsTable = new JTable(reviewTableModel);
+
+        // Create a scroll pane for the table
+        JScrollPane scrollPane = new JScrollPane(reviewsTable);
+
+        // Create a new window to display the reviews
+        JFrame reviewsFrame = new JFrame("All Reviews");
+        reviewsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        reviewsFrame.setLayout(new BorderLayout());
+
+        // Add the scroll pane to the frame
+        reviewsFrame.add(scrollPane, BorderLayout.CENTER);
+
+        // Pack and center the JFrame
+        reviewsFrame.setPreferredSize(new Dimension(reviewsFrame.getWidth() + 1000, reviewsFrame.getHeight()+500));
+        reviewsTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+        reviewsTable.getColumnModel().getColumn(1).setPreferredWidth(80);
+        reviewsTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+        reviewsTable.getColumnModel().getColumn(3).setPreferredWidth(200);
+        reviewsTable.getColumnModel().getColumn(4).setPreferredWidth(400);
+        reviewsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        reviewsFrame.pack();
+        reviewsFrame.setLocationRelativeTo(null);
+
+        // Make the frame visible
+        reviewsFrame.setVisible(true);
+    }
+
+    private void parseReviews(DefaultTableModel reviewTableModel) {
+        try {
+            Scanner scanner = new Scanner(new File(REVIEWS_PATH));
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(";");
+
+                // Extract details from the review
+                String customer = parts[1].trim();
+                String vendor = parts[2].trim();
+                String date = parts[3].trim();
+                String items = parts[4].trim();
+                String review = parts[5].trim();
+
+                // Add a row to the provided reviews table model
+                reviewTableModel.addRow(new Object[]{customer, vendor, date, items, review});
+            }
+
+            scanner.close();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    
     private void showOrderHistory() {
         // Create JFrame for order history
         JFrame orderHistoryFrame = new JFrame("Order History");
