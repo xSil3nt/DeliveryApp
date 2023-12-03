@@ -1,6 +1,8 @@
 package deliveryapp;
 
 import deliveryapp.Order.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,8 +88,36 @@ public class Customer extends User {
 
         // Combine timestamp with customer username to create a unique order ID
         String orderId = timestamp + super.getUsername();
+        orderId = calculateSHA256(orderId); //Calc SHA256 and use first 12 chars
 
         return orderId;
+    }
+    
+    private static String calculateSHA256(String input) {
+        try {
+            // Create a MessageDigest object for SHA-256
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            // Update the digest with the input string
+            md.update(input.getBytes());
+
+            // Get the hash bytes
+            byte[] hashBytes = md.digest();
+
+            // Convert the bytes to a hexadecimal string
+            StringBuilder hexStringBuilder = new StringBuilder();
+            for (byte b : hashBytes) {
+                hexStringBuilder.append(String.format("%02x", b));
+            }
+
+            // Truncate the string to 12 characters
+            String truncatedHash = hexStringBuilder.toString().substring(0, 12);
+
+            return truncatedHash;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     
