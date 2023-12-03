@@ -595,15 +595,28 @@ public class CustomerGUI extends javax.swing.JFrame {
         writeReviewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Get the selected row and open a window to write a review for the selected order
+                // Get the selected row
                 int selectedRow = orderTable.getSelectedRow();
+
                 if (selectedRow != -1) {
-                    String selectedOrderId = (String) orderTable.getValueAt(selectedRow, 0);
-                    String selectedVendor = (String) orderTable.getValueAt(selectedRow, 1);
-                    String selectedDate = (String) orderTable.getValueAt(selectedRow, 2);
-                    String selectedCart = (String) orderTable.getValueAt(selectedRow, 4);
-                    writeReview(selectedOrderId, selectedVendor, selectedDate, selectedCart);
+                    // Get the order status
+                    String orderStatus = (String) orderTable.getValueAt(selectedRow, 6);
+
+                    // Check if the order status is COMPLETED
+                    if ("COMPLETED".equals(orderStatus)) {
+                        // Get other details and open a window to write a review for the selected order
+                        String selectedOrderId = (String) orderTable.getValueAt(selectedRow, 0);
+                        String selectedVendor = (String) orderTable.getValueAt(selectedRow, 1);
+                        String selectedDate = (String) orderTable.getValueAt(selectedRow, 2);
+                        String selectedCart = (String) orderTable.getValueAt(selectedRow, 4);
+
+                        writeReview(selectedOrderId, selectedVendor, selectedDate, selectedCart);
+                    } else {
+                        // Show a warning if the order status is not COMPLETED
+                        JOptionPane.showMessageDialog(orderHistoryFrame, "You can only write a review for completed orders.", "Write Review Error", JOptionPane.WARNING_MESSAGE);
+                    }
                 } else {
+                    // Show a warning if no order is selected
                     JOptionPane.showMessageDialog(orderHistoryFrame, "Please select an order to write a review.", "Write Review Error", JOptionPane.WARNING_MESSAGE);
                 }
             }
