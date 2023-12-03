@@ -495,33 +495,42 @@ public class CustomerGUI extends javax.swing.JFrame {
     }
 
     private void bt_placeOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_placeOrderActionPerformed
-        ArrayList<Integer> cart = loggedIn.getCart();
+    ArrayList<Integer> cart = loggedIn.getCart();
 
-        if (cart == null || cart.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Your cart is empty. Please add items before placing an order.", "Empty Cart", JOptionPane.WARNING_MESSAGE);
-            return; // Do not proceed with placing the order
-        }
+    if (cart == null || cart.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Your cart is empty. Please add items before placing an order.", "Empty Cart", JOptionPane.WARNING_MESSAGE);
+        return; // Do not proceed with placing the order
+    }
 
-        String placedOrderId = loggedIn.placeOrder();
-        if (placedOrderId != null) {
-            // Order placed successfully
-            Order placedOrder = loggedIn.findOrderById(placedOrderId);
+    // Calculate the total amount of the order
+    double totalAmount = Double.parseDouble(lb_total.getText());
 
-            // Store order info in file
-            storeOrderDetails(placedOrder);
-            
-            // Update balance
-            double newBalance = (loggedIn.getBalance() - placedOrder.getTotalAmount());
-            updateBalanceFile(newBalance);
+    // Check if the user has enough balance to afford the order
+    if (loggedIn.getBalance() < totalAmount) {
+        JOptionPane.showMessageDialog(this, "Insufficient balance. Please contact admin to add funds to your account before placing an order.", "Insufficient Balance", JOptionPane.WARNING_MESSAGE);
+        return; // Do not proceed with placing the order
+    }
 
+    // Proceed to place the order
+    String placedOrderId = loggedIn.placeOrder();
+    if (placedOrderId != null) {
+        // Order placed successfully
+        Order placedOrder = loggedIn.findOrderById(placedOrderId);
 
-            // Display success dialog box
-            JOptionPane.showMessageDialog(this, "Order placed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            updateTotal();
-        } else {
-            // Failed to place the order
-            JOptionPane.showMessageDialog(this, "Failed to place the order. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        // Store order info in file
+        storeOrderDetails(placedOrder);
+
+        // Update balance
+        double newBalance = (loggedIn.getBalance() - placedOrder.getTotalAmount());
+        updateBalanceFile(newBalance);
+
+        // Display success dialog box
+        JOptionPane.showMessageDialog(this, "Order placed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        updateTotal();
+    } else {
+        // Failed to place the order
+        JOptionPane.showMessageDialog(this, "Failed to place the order. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_bt_placeOrderActionPerformed
 
     private void updateBalanceFile(double newBalance) {
