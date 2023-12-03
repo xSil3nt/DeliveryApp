@@ -509,6 +509,10 @@ public class CustomerGUI extends javax.swing.JFrame {
 
             // Store order info in file
             storeOrderDetails(placedOrder);
+            
+            // Update balance
+            double newBalance = (loggedIn.getBalance() - placedOrder.getTotalAmount());
+            updateBalanceFile(newBalance);
 
 
             // Display success dialog box
@@ -520,6 +524,57 @@ public class CustomerGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bt_placeOrderActionPerformed
 
+    private void updateBalanceFile(double newBalance) {
+        // Handle the balance update logic
+        if (loggedIn != null) {
+            loggedIn.setBalance(newBalance);
+            // Assuming lb_balance is a label displaying the balance, update it accordingly
+            lb_balance.setText(String.valueOf(loggedIn.getBalance()));
+
+            try {
+                // Read the content of the file
+                File file = new File(CUST_CREDS_PATH);
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                StringBuilder content = new StringBuilder();
+                String line;
+
+                // Iterate through the lines, update the balance, and build the new content
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(";");
+                    if (parts.length == 5) {
+                        String username = parts[0];
+                        String password = parts[1];
+                        String balance = parts[2];
+                        String currentLocation = parts[3];
+                        String phone = parts[4];
+
+                        if (username.equals(loggedIn.getUsername())) {
+                            // Update the balance for the specific user
+                            balance = String.valueOf(newBalance);
+                        }
+
+                        // Reconstruct the line with the updated information
+                        String updatedLine = username + ";" + password + ";" + balance + ";" + currentLocation + ";" + phone;
+                        content.append(updatedLine).append("\n");
+                    }
+                }
+
+                // Close the reader
+                reader.close();
+
+                // Write the updated content back to the file
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                writer.write(content.toString());
+                writer.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error updating customer balance.");
+            }
+        }
+    }
+
+    
     private void storeOrderDetails(Order order) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(ORDERS_PATH, true))) {
             // Format the order details
