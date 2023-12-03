@@ -4,17 +4,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 import javax.swing.table.*;
@@ -33,6 +26,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     private static final String CUST_CREDS_PATH = "programData\\customerCreds.txt";
     private static final String MENU_PATH = "programData\\menu.txt";
     private static final String ORDERS_PATH = "programData\\orders.txt";
+    private static final String REVIEWS_PATH = "programData\\reviews.txt";
 
     /**
      * Creates new form CustomerGUI
@@ -513,6 +507,7 @@ public class CustomerGUI extends javax.swing.JFrame {
 
             // Display success dialog box
             JOptionPane.showMessageDialog(this, "Order placed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            updateTotal();
         } else {
             // Failed to place the order
             JOptionPane.showMessageDialog(this, "Failed to place the order. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -604,7 +599,10 @@ public class CustomerGUI extends javax.swing.JFrame {
                 int selectedRow = orderTable.getSelectedRow();
                 if (selectedRow != -1) {
                     String selectedOrderId = (String) orderTable.getValueAt(selectedRow, 0);
-                    //reviewWindow(selectedOrderId);
+                    String selectedVendor = (String) orderTable.getValueAt(selectedRow, 1);
+                    String selectedDate = (String) orderTable.getValueAt(selectedRow, 2);
+                    String selectedCart = (String) orderTable.getValueAt(selectedRow, 4);
+                    writeReview(selectedOrderId, selectedVendor, selectedDate, selectedCart);
                 } else {
                     JOptionPane.showMessageDialog(orderHistoryFrame, "Please select an order to write a review.", "Write Review Error", JOptionPane.WARNING_MESSAGE);
                 }
@@ -625,6 +623,71 @@ public class CustomerGUI extends javax.swing.JFrame {
         orderHistoryFrame.setLocationRelativeTo(null);
         orderHistoryFrame.setVisible(true);
     }
+    
+private void writeReview(String orderId, String vendorName, String date, String cart) {
+    // Get the currently logged-in customer's username
+    String customerName = loggedIn.getUsername();
+
+    // Create a JFrame for the review entry
+    JFrame reviewFrame = new JFrame("Write Review");
+    reviewFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+    // Create JTextArea for the review content
+    JTextArea reviewTextArea = new JTextArea(10, 50);
+    JScrollPane scrollPane = new JScrollPane(reviewTextArea);
+
+    // Create JButton to submit the review
+    JButton submitButton = new JButton("Submit Review");
+
+    // ActionListener for the submit button
+    submitButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Get the review content
+            String reviewContent = reviewTextArea.getText();
+
+            // Validate if the review content is not empty
+            if (!reviewContent.isEmpty()) {
+                // Write the review content to the reviews.txt file
+                try (FileWriter fileWriter = new FileWriter(REVIEWS_PATH, true);
+                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                     PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
+
+                    // Format the review entry
+                    String reviewEntry = orderId + ";" + customerName + ";" + vendorName + ";" + date + ";" + cart + ";" + reviewContent + ";";
+
+                    // Write the review entry to the file
+                    printWriter.println(reviewEntry);
+
+                    // Show success message
+                    JOptionPane.showMessageDialog(reviewFrame, "Review submitted successfully!", "Review Submitted", JOptionPane.INFORMATION_MESSAGE);
+
+                    // Close the review frame
+                    reviewFrame.dispose();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(reviewFrame, "Error writing review to file.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                // Show a warning if the review content is empty
+                JOptionPane.showMessageDialog(reviewFrame, "Please enter your review before submitting.", "Empty Review", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    });
+
+    // Create a vertical BoxLayout for the JFrame
+    Box verticalBox = Box.createVerticalBox();
+    verticalBox.add(scrollPane);
+    verticalBox.add(submitButton);
+
+    // Add the Box to the JFrame
+    reviewFrame.getContentPane().add(verticalBox);
+
+    // Pack and center the JFrame
+    reviewFrame.pack();
+    reviewFrame.setLocationRelativeTo(null);
+    reviewFrame.setVisible(true);
+}
 
     private void reOrder(String orderId) {
         try (BufferedReader reader = new BufferedReader(new FileReader(ORDERS_PATH))) {
