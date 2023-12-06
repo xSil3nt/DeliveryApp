@@ -8,6 +8,9 @@ package deliveryapp;
  *
  * @author Shazin
  */
-public class Vendor {
+public class Vendor extends User {
     
+    public Vendor(String username, String password) {
+        super(username, password, 3);
+    }
 }
