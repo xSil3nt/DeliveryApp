@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ListSelectionModel;
 
 /**
  *
@@ -30,19 +31,28 @@ public class VendorGUI extends javax.swing.JFrame {
      */
     public VendorGUI(String username, String password) {
         initComponents();
+        initTable();
         loggedIn = new Vendor(username, password);
         lb_welcome.setText("Welcome "+ loggedIn.getUsername());
-        model.setColumnIdentifiers(column);
+
         parseOrders();
     }
     
     public VendorGUI() {
         String username = "Vendor1", password = "test";
         initComponents();
+        initTable();
         loggedIn = new Vendor(username, password);
         lb_welcome.setText("Welcome "+ loggedIn.getUsername());
         model.setColumnIdentifiers(column);
         parseOrders();
+    }
+    
+    private void initTable() {
+        model.setColumnIdentifiers(column);
+        tb_orders.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tb_orders.setRowSelectionAllowed(true);
+        tb_orders.setColumnSelectionAllowed(false);
     }
 
     private void parseOrders() {
@@ -159,10 +169,8 @@ public class VendorGUI extends javax.swing.JFrame {
         bt_ready.setEnabled(false);
 
         tb_orders.setModel(model);
-        tb_orders.setColumnSelectionAllowed(true);
         tb_orders.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tb_orders);
-        tb_orders.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
