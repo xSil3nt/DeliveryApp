@@ -53,6 +53,7 @@ public class VendorGUI extends javax.swing.JFrame {
         tb_orders.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tb_orders.setRowSelectionAllowed(true);
         tb_orders.setColumnSelectionAllowed(false);
+        tb_orders.setDefaultEditor(Object.class, null);
     }
 
     private void parseOrders() {
@@ -170,6 +171,11 @@ public class VendorGUI extends javax.swing.JFrame {
 
         tb_orders.setModel(model);
         tb_orders.getTableHeader().setReorderingAllowed(false);
+        tb_orders.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tb_ordersMouseReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tb_orders);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -223,6 +229,12 @@ public class VendorGUI extends javax.swing.JFrame {
     private void bt_menuOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_menuOptionsActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bt_menuOptionsActionPerformed
+
+    private void tb_ordersMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_ordersMouseReleased
+        int selectedRow = tb_orders.getSelectedRow();
+        String selectedOrderStatus = (String) tb_orders.getValueAt(selectedRow, 7);
+        System.out.println(selectedOrderStatus);
+    }//GEN-LAST:event_tb_ordersMouseReleased
 
     /**
      * @param args the command line arguments

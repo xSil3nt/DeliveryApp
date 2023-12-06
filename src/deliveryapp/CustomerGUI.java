@@ -283,6 +283,8 @@ public class CustomerGUI extends javax.swing.JFrame {
         tb_menu.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tb_menu.setRowSelectionAllowed(true);
         tb_menu.setColumnSelectionAllowed(false);
+        tb_menu.setDefaultEditor(Object.class, null);
+
         // Set the preferred width for specific columns
         columnModel.getColumn(0).setPreferredWidth(100); // Vendor column
         columnModel.getColumn(1).setPreferredWidth(30); // ID column
@@ -651,6 +653,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         reviewsTable.getColumnModel().getColumn(3).setPreferredWidth(200);
         reviewsTable.getColumnModel().getColumn(4).setPreferredWidth(400);
         reviewsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        reviewsTable.setDefaultEditor(Object.class, null);
         reviewsFrame.pack();
         reviewsFrame.setLocationRelativeTo(null);
 
@@ -769,6 +772,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         orderTable.getColumnModel().getColumn(5).setPreferredWidth(40);
         orderTable.getColumnModel().getColumn(6).setPreferredWidth(100);
         orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        orderTable.setDefaultEditor(Object.class, null);
         orderHistoryFrame.pack();
         orderHistoryFrame.setLocationRelativeTo(null);
         orderHistoryFrame.setVisible(true);
