@@ -163,11 +163,16 @@ public class VendorGUI extends javax.swing.JFrame {
         bt_accept.setText("Accept Order");
         bt_accept.setEnabled(false);
 
-        bt_decline.setText("Decline Order");
+        bt_decline.setText("Decline/Cancel Order");
         bt_decline.setEnabled(false);
 
         bt_ready.setText("Order Ready");
         bt_ready.setEnabled(false);
+        bt_ready.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_readyActionPerformed(evt);
+            }
+        });
 
         tb_orders.setModel(model);
         tb_orders.getTableHeader().setReorderingAllowed(false);
@@ -185,7 +190,7 @@ public class VendorGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 796, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lb_welcome, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -234,7 +239,24 @@ public class VendorGUI extends javax.swing.JFrame {
         int selectedRow = tb_orders.getSelectedRow();
         String selectedOrderStatus = (String) tb_orders.getValueAt(selectedRow, 7);
         System.out.println(selectedOrderStatus);
+        if (selectedOrderStatus.equals("PENDING")) {
+            bt_accept.setEnabled(true);
+            bt_decline.setEnabled(true);
+        } else {
+            bt_accept.setEnabled(false);
+            bt_decline.setEnabled(false);
+        }
+        if (selectedOrderStatus.equals("IN PROGRESS")) {
+            bt_ready.setEnabled(true);
+        } else {
+            bt_ready.setEnabled(false);
+        }
+        
     }//GEN-LAST:event_tb_ordersMouseReleased
+
+    private void bt_readyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_readyActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bt_readyActionPerformed
 
     /**
      * @param args the command line arguments
