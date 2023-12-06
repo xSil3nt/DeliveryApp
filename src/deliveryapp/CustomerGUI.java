@@ -29,6 +29,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     private static final String ORDERS_PATH = "programData\\orders.txt";
     private static final String REVIEWS_PATH = "programData\\reviews.txt";
 
+
     /**
      * Creates new form CustomerGUI
      */
