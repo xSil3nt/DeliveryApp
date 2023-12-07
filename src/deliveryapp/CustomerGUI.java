@@ -624,7 +624,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         displayReviews();
     }//GEN-LAST:event_bt_reviewsActionPerformed
 
-        private void displayReviews() {
+    private void displayReviews() {
         // Create the table model
         DefaultTableModel reviewTableModel = new DefaultTableModel(new Object[]{"Customer", "Vendor", "Date", "Items", "Review"}, 0);
 

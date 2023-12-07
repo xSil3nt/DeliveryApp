@@ -4,6 +4,8 @@
  */
 package deliveryapp;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.*;
 import javax.swing.table.*;
 import java.text.ParseException;
@@ -12,6 +14,9 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -144,6 +149,7 @@ public class VendorGUI extends javax.swing.JFrame {
         bt_ready = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tb_orders = new javax.swing.JTable();
+        bt_reviews = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -183,6 +189,13 @@ public class VendorGUI extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tb_orders);
 
+        bt_reviews.setText("View Reviews");
+        bt_reviews.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_reviewsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -201,7 +214,8 @@ public class VendorGUI extends javax.swing.JFrame {
                     .addComponent(bt_ready, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bt_decline, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bt_accept, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bt_menuOptions, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(bt_menuOptions, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bt_reviews, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(21, 21, 21))
         );
         layout.setVerticalGroup(
@@ -223,7 +237,9 @@ public class VendorGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(bt_decline)
                         .addGap(18, 18, 18)
-                        .addComponent(bt_ready))
+                        .addComponent(bt_ready)
+                        .addGap(18, 18, 18)
+                        .addComponent(bt_reviews))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
@@ -258,6 +274,69 @@ public class VendorGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_bt_readyActionPerformed
 
+    private void bt_reviewsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_reviewsActionPerformed
+        // Create the table model
+        DefaultTableModel reviewTableModel = new DefaultTableModel(new Object[]{"Customer", "Vendor", "Date", "Items", "Review"}, 0);
+
+        // Parse and add reviews to the table model
+        parseReviews(reviewTableModel);
+
+        // Create the table
+        JTable reviewsTable = new JTable(reviewTableModel);
+
+        // Create a scroll pane for the table
+        JScrollPane scrollPane = new JScrollPane(reviewsTable);
+
+        // Create a new window to display the reviews
+        JFrame reviewsFrame = new JFrame("All Reviews");
+        reviewsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        reviewsFrame.setLayout(new BorderLayout());
+
+        // Add the scroll pane to the frame
+        reviewsFrame.add(scrollPane, BorderLayout.CENTER);
+
+        // Pack and center the JFrame
+        reviewsFrame.setPreferredSize(new Dimension(reviewsFrame.getWidth() + 1000, reviewsFrame.getHeight()+500));
+        reviewsTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+        reviewsTable.getColumnModel().getColumn(1).setPreferredWidth(80);
+        reviewsTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+        reviewsTable.getColumnModel().getColumn(3).setPreferredWidth(200);
+        reviewsTable.getColumnModel().getColumn(4).setPreferredWidth(400);
+        reviewsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        reviewsTable.setDefaultEditor(Object.class, null);
+        reviewsFrame.pack();
+        reviewsFrame.setLocationRelativeTo(null);
+
+        // Make the frame visible
+        reviewsFrame.setVisible(true);
+    }//GEN-LAST:event_bt_reviewsActionPerformed
+
+    private void parseReviews(DefaultTableModel reviewTableModel) {
+        try {
+            Scanner scanner = new Scanner(new File(REVIEWS_PATH));
+
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    String[] parts = line.split(";");
+
+                    // Extract details from the review
+                    String customer = parts[1].trim();
+                    String vendor = parts[2].trim();
+                    String date = parts[3].trim();
+                    String items = parts[4].trim();
+                    String review = parts[5].trim();
+
+                    if (loggedIn.getUsername().equals(vendor)) {
+                        reviewTableModel.addRow(new Object[]{customer, vendor, date, items, review});
+                    }
+                }
+                scanner.close();
+            } catch (FileNotFoundException ex) {
+            Logger.getLogger(VendorGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+            
+    }
     /**
      * @param args the command line arguments
      */
@@ -298,6 +377,7 @@ public class VendorGUI extends javax.swing.JFrame {
     private javax.swing.JButton bt_decline;
     private javax.swing.JButton bt_menuOptions;
     private javax.swing.JButton bt_ready;
+    private javax.swing.JButton bt_reviews;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lb_title;
     private javax.swing.JLabel lb_welcome;
