@@ -10,7 +10,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.*;
 import javax.swing.*;
 
@@ -28,7 +31,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     private static final String MENU_PATH = "programData\\menu.txt";
     private static final String ORDERS_PATH = "programData\\orders.txt";
     private static final String REVIEWS_PATH = "programData\\reviews.txt";
-
+    private static final String CUST_NOTIFICATIONS_PATH = "programData\\custNotifications.txt";
 
     /**
      * Creates new form CustomerGUI
@@ -55,7 +58,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         model.setColumnIdentifiers(column);
         adjustMenuTable();
         parseMenu();
-        
+        showNotifications();
         
     }
     
@@ -72,7 +75,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         lb_phone.setText(loggedIn.getPhone());
         adjustMenuTable();
         parseMenu();
-        
+        showNotifications();
     }
 
     /**
@@ -323,6 +326,45 @@ public class CustomerGUI extends javax.swing.JFrame {
             scanner.close();
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
+        }
+    }
+    
+    private void showNotifications() {
+        try {
+            File file = new File(CUST_NOTIFICATIONS_PATH);
+            Scanner scanner = new Scanner(file);
+            List<String> lines = new ArrayList<>();
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(";");
+                if (parts.length == 2) {
+                    String customerId = parts[0];
+                    String notification = parts[1];
+
+                    if (loggedIn != null && loggedIn.getUsername().equals(customerId)) {
+                        System.out.println("Notification for " + customerId + ": " + notification);
+                        JOptionPane.showMessageDialog(null, customerId + ": " + notification, "Notification", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        lines.add(line);
+                    }
+                   
+                }
+            }
+            scanner.close();
+            
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+            
+            writer.close();
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            Logger.getLogger(CustomerGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
