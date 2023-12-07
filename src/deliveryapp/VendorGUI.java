@@ -286,7 +286,12 @@ public class VendorGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_tb_ordersMouseReleased
 
     private void bt_readyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_readyActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tb_orders.getSelectedRow();
+        String newStatus = "DELIVERY_PENDING";
+        tb_orders.setValueAt(newStatus, selectedRow, 7);
+        
+        String selectedOrderId = (String) tb_orders.getValueAt(selectedRow, 0);
+        updateOrderStatus(selectedOrderId, newStatus); 
     }//GEN-LAST:event_bt_readyActionPerformed
 
     private void bt_reviewsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_reviewsActionPerformed
@@ -328,7 +333,7 @@ public class VendorGUI extends javax.swing.JFrame {
 
     private void bt_acceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_acceptActionPerformed
         int selectedRow = tb_orders.getSelectedRow();
-        String newStatus = "IN PROGRESS";
+        String newStatus = "IN_PROGRESS";
         tb_orders.setValueAt(newStatus, selectedRow, 7);
         
         String selectedOrderId = (String) tb_orders.getValueAt(selectedRow, 0);
