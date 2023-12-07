@@ -10,7 +10,9 @@ import java.io.*;
 import javax.swing.table.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +29,7 @@ public class VendorGUI extends javax.swing.JFrame {
     private static final String MENU_PATH = "programData\\menu.txt";
     private static final String ORDERS_PATH = "programData\\orders.txt";
     private static final String REVIEWS_PATH = "programData\\reviews.txt";
+    private static final String CUST_NOTIFICATIONS_PATH = "programData\\custNotifications.txt";
     
     private DefaultTableModel model = new DefaultTableModel();
     private String[] column = {"Order ID", "Date", "Customer", "Cart Items", "Item Names", "Order Total", "Location", "Status"};
@@ -168,9 +171,19 @@ public class VendorGUI extends javax.swing.JFrame {
 
         bt_accept.setText("Accept Order");
         bt_accept.setEnabled(false);
+        bt_accept.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_acceptActionPerformed(evt);
+            }
+        });
 
         bt_decline.setText("Decline/Cancel Order");
         bt_decline.setEnabled(false);
+        bt_decline.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_declineActionPerformed(evt);
+            }
+        });
 
         bt_ready.setText("Order Ready");
         bt_ready.setEnabled(false);
@@ -264,9 +277,13 @@ public class VendorGUI extends javax.swing.JFrame {
         }
         if (selectedOrderStatus.equals("IN PROGRESS")) {
             bt_ready.setEnabled(true);
+            bt_decline.setEnabled(true);
         } else {
             bt_ready.setEnabled(false);
+            bt_decline.setEnabled(false);
         }
+        
+        
         
     }//GEN-LAST:event_tb_ordersMouseReleased
 
@@ -288,7 +305,7 @@ public class VendorGUI extends javax.swing.JFrame {
         JScrollPane scrollPane = new JScrollPane(reviewsTable);
 
         // Create a new window to display the reviews
-        JFrame reviewsFrame = new JFrame("All Reviews");
+        JFrame reviewsFrame = new JFrame("Reviews");
         reviewsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         reviewsFrame.setLayout(new BorderLayout());
 
@@ -311,6 +328,72 @@ public class VendorGUI extends javax.swing.JFrame {
         reviewsFrame.setVisible(true);
     }//GEN-LAST:event_bt_reviewsActionPerformed
 
+    private void bt_acceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_acceptActionPerformed
+        int selectedRow = tb_orders.getSelectedRow();
+        String newStatus = "IN PROGRESS";
+        tb_orders.setValueAt(newStatus, selectedRow, 7);
+        
+        String selectedOrderId = (String) tb_orders.getValueAt(selectedRow, 0);
+        updateOrderStatus(selectedOrderId, newStatus);
+        
+        //Notify customer about order upadte
+        String customer = (String) tb_orders.getValueAt(selectedRow, 2);
+        notifyCustomer(customer, "Order "+ selectedOrderId + " has been accepted by vendor.");
+    }//GEN-LAST:event_bt_acceptActionPerformed
+
+    private void bt_declineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_declineActionPerformed
+        int selectedRow = tb_orders.getSelectedRow();
+        String newStatus = "CANCELLED";
+        tb_orders.setValueAt(newStatus, selectedRow, 7);
+        
+        String selectedOrderId = (String) tb_orders.getValueAt(selectedRow, 0);
+        updateOrderStatus(selectedOrderId, newStatus);
+        
+        //Notify customer about order upadte
+        String customer = (String) tb_orders.getValueAt(selectedRow, 2);
+        notifyCustomer(customer, "Order "+ selectedOrderId + " has been declined/cancelled by vendor.");
+    }//GEN-LAST:event_bt_declineActionPerformed
+
+    private void updateOrderStatus(String orderId, String newStatus) {
+        try {
+            File file = new File(ORDERS_PATH);
+            Scanner scanner = new Scanner(file);
+            List<String> lines = new ArrayList<>();
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.contains(orderId)) {
+                    // Assuming the status is the 8th column (index 7)
+                    String[] parts = line.split(";");
+                    parts[7] = newStatus;
+                    line = String.join(";", parts);
+                }
+                lines.add(line);
+            }
+
+            scanner.close();
+
+            FileWriter writer = new FileWriter(file);
+            for (String updatedLine : lines) {
+                writer.write(updatedLine + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception as needed
+        }
+    }
+    
+    public void notifyCustomer(String customer, String notification) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(CUST_NOTIFICATIONS_PATH, true))) {
+            String entry = customer + ";" + notification;
+            writer.write(entry);
+            writer.newLine(); 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }        
+    }
+    
     private void parseReviews(DefaultTableModel reviewTableModel) {
         try {
             Scanner scanner = new Scanner(new File(REVIEWS_PATH));
