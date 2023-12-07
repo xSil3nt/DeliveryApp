@@ -6,6 +6,10 @@ package deliveryapp;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import javax.swing.table.*;
 import java.text.ParseException;
@@ -16,10 +20,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
+
 
 /**
  *
@@ -260,9 +262,262 @@ public class VendorGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bt_menuOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_menuOptionsActionPerformed
-        // TODO add your handling code here:
+        // Create a new JFrame for the menu window
+        JFrame menuWindow = new JFrame("Menu Options");
+
+        // Create input fields and labels
+        JLabel labelID = new JLabel("ID:");
+        JTextField textFieldID = new JTextField(10);
+        JLabel labelItemName = new JLabel("Item Name:");
+        JTextField textFieldItemName = new JTextField(20);
+        JLabel labelDescription = new JLabel("Description:");
+        JTextArea textAreaDescription = new JTextArea(5, 20);
+        JLabel labelPrice = new JLabel("Price:");
+        JTextField textFieldPrice = new JTextField(10);
+
+        // Create buttons
+        JButton buttonAdd = new JButton("Add");
+        JButton buttonRemove = new JButton("Remove");
+        JButton buttonEdit = new JButton("Edit");
+
+        // Create a JTable and its model
+        String[] menuColumns = {"ID", "Item Name", "Description", "Price"};
+        DefaultTableModel menuModel = new DefaultTableModel();
+        menuModel.setColumnIdentifiers(menuColumns);
+        JTable menuTable = new JTable(menuModel);
+
+        // Add components to the menu window
+        JPanel panelInputs = new JPanel(new FlowLayout());
+        panelInputs.add(labelID);
+        panelInputs.add(textFieldID);
+        panelInputs.add(labelItemName);
+        panelInputs.add(textFieldItemName);
+        panelInputs.add(labelDescription);
+        panelInputs.add(textAreaDescription);
+        panelInputs.add(labelPrice);
+        panelInputs.add(textFieldPrice);
+
+        JPanel panelButtons = new JPanel(new FlowLayout());
+        panelButtons.add(buttonAdd);
+        panelButtons.add(buttonRemove);
+        panelButtons.add(buttonEdit);
+
+        menuWindow.getContentPane().setLayout(new BorderLayout());
+        menuWindow.getContentPane().add(panelInputs, BorderLayout.NORTH);
+        menuWindow.getContentPane().add(panelButtons, BorderLayout.CENTER);
+        menuWindow.getContentPane().add(new JScrollPane(menuTable), BorderLayout.SOUTH);
+        
+        // Populate the table with stuff from da menu txt file
+        try {
+            Scanner scanner = new Scanner(new File(MENU_PATH));
+            
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(";");
+                
+                // get vendor name
+                String vendorName = parts[0].trim();
+                if (loggedIn.getUsername().equals(vendorName)) {
+                    // get menu items only if logged in vendor = menu owner
+                    for (int i = 1; i < parts.length; i++) {
+                        String[] itemDetails = parts[i].split("\\|");
+
+                        if (itemDetails.length == 4) {
+                            String itemId = itemDetails[0].trim();
+                            String itemName = itemDetails[1].trim();
+                            String description = itemDetails[2].trim();
+                            String price = itemDetails[3].trim();
+
+                            menuModel.addRow(new Object[]{itemId, itemName, description, price});
+
+                        }
+                    }
+                }
+                
+
+            }
+            
+            scanner.close();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        
+        
+        
+
+        // Add action listeners to buttons
+        buttonAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Attempt to parse the entered values as integers
+                try {
+                    int id = Integer.parseInt(textFieldID.getText());
+                    String itemName = textFieldItemName.getText();
+                    String description = textAreaDescription.getText();
+                    int price = Integer.parseInt(textFieldPrice.getText());
+
+                    // Add new item to the table model
+                    menuModel.addRow(new Object[] {id, itemName, description, price});
+                    
+                    addToMenuFile(loggedIn.getUsername(), id, itemName, description, price);
+                    
+                    // Clear input fields
+                    textFieldID.setText("");
+                    textFieldItemName.setText("");
+                    textAreaDescription.setText("");
+                    textFieldPrice.setText("");
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Please enter valid integer values for ID and Price.");
+                }
+            }
+        });
+
+        buttonRemove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected row index
+                int selectedRow = menuTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    int selectedOrderId = Integer.parseInt((String) menuModel.getValueAt(selectedRow, 0));
+                    menuModel.removeRow(selectedRow);
+                    removeFromMenuFile(loggedIn.getUsername(), selectedOrderId);
+                    
+                } else {
+                    JOptionPane.showMessageDialog(menuWindow, "Please select a row to remove.");
+                }
+            }
+        });
+
+        buttonEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected row index
+                int selectedRow = menuTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    // Get the values from the selected row
+                    String id = menuModel.getValueAt(selectedRow, 0).toString();
+                    String itemName = (String) menuModel.getValueAt(selectedRow, 1);
+                    String description = (String) menuModel.getValueAt(selectedRow, 2);
+                    String price = (String) menuModel.getValueAt(selectedRow, 3).toString();
+
+                    // Update the input fields with the values
+                    textFieldID.setText(id);
+                    textFieldItemName.setText(itemName);
+                    textAreaDescription.setText(description);
+                    textFieldPrice.setText(price);
+                    menuModel.removeRow(selectedRow);
+                } else {
+                    JOptionPane.showMessageDialog(menuWindow, "Please select a row to edit.");
+                }
+            }
+        });
+        
+
+        // Set menu window size and visibility
+        menuWindow.pack();
+        menuWindow.setVisible(true);
     }//GEN-LAST:event_bt_menuOptionsActionPerformed
 
+    private void addToMenuFile(String vendor, int id, String itemName, String desc, int price) {
+            try (Scanner sc = new Scanner(new File(MENU_PATH))) {
+                StringBuilder sb = new StringBuilder();
+                boolean vendorFound = false;
+                while (sc.hasNextLine()) {
+                    String line = sc.nextLine();
+                    String[] parts = line.split(";");
+                    String newLine = null;
+                    
+                    String currentVendor = parts[0].trim();
+                    System.out.println(parts.length);
+
+                    // Check if the current line is for the right vendor
+                    if (currentVendor.equals(vendor)) {
+                        vendorFound = true;
+                        sb.append(currentVendor).append(";");
+                        boolean notFound = false;
+                        for (int i = 1; i < parts.length; i++) {
+                            
+                            String[] itemInfo = parts[i].split("\\|");
+                            int itemIdFromFile = Integer.parseInt(itemInfo[0]);
+                            String itemNameFromFile = itemInfo[1].trim();
+                            String descFromFile = itemInfo[2].trim();
+                            int priceFromFile = Integer.parseInt(itemInfo[3]);                            
+                            if (itemIdFromFile == id) {
+                                newLine = id + "|" + itemName + "|" + desc + "|" + price + ";";
+                                notFound = false;
+                            } else {
+                                newLine = itemIdFromFile + "|" + itemNameFromFile + "|" + descFromFile + "|" + priceFromFile + ";";
+                                notFound = true;
+                            }
+                            sb.append(newLine);
+                        }
+                        if (notFound == true || parts.length == 1) {
+                            newLine = id + "|" + itemName + "|" + desc + "|" + price + ";";
+                        }
+                        sb.append(newLine);
+                        
+                    } else {
+                        sb.append("\n").append(line);
+                    }
+                }
+                if (vendorFound == false) {
+                    sb.append(vendor + ";" + id + "|" + itemName + "|" + desc + "|" + price + ";");
+                }
+                BufferedWriter writer = new BufferedWriter(new FileWriter(MENU_PATH));
+                writer.write(sb.toString());
+                writer.newLine();
+                writer.close();
+            } catch (FileNotFoundException e) {
+                Logger.getLogger(VendorGUI.class.getName()).log(Level.SEVERE, null, e);
+            } catch (IOException ex) {
+                Logger.getLogger(VendorGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    private void removeFromMenuFile(String vendor, int id) {
+        try (Scanner sc = new Scanner(new File(MENU_PATH))) {
+            StringBuilder sb = new StringBuilder();
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] parts = line.split(";");
+                String currentVendor = parts[0].trim();
+
+
+                // Check if the current line is for the specified vendor
+                if (currentVendor.equals(vendor)) {
+                    sb.append(currentVendor).append(";");
+                    for (int i = 1; i < parts.length; i++) {
+                        String[] itemInfo = parts[i].split("\\|");
+                        int itemIdFromFile = Integer.parseInt(itemInfo[0]);
+
+                        // Check if the item ID matches
+                        if (itemIdFromFile != id) {
+                            // Append the menu item only if the item ID is not the one to be removed
+                            sb.append(itemIdFromFile).append("|")
+                              .append(itemInfo[1].trim()).append("|")
+                              .append(itemInfo[2].trim()).append("|")
+                              .append(Integer.parseInt(itemInfo[3])).append(";");
+                        }
+                    }
+                    sb.append("\n");
+                } else {
+                    // add other vendor menus
+                    sb.append(line).append("\n");
+                }
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(MENU_PATH))) {
+                writer.write(sb.toString());
+            } catch (IOException ex) {
+                Logger.getLogger(VendorGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (FileNotFoundException e) {
+            Logger.getLogger(VendorGUI.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    
     private void tb_ordersMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_ordersMouseReleased
         int selectedRow = tb_orders.getSelectedRow();
         String selectedOrderStatus = (String) tb_orders.getValueAt(selectedRow, 7);

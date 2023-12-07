@@ -24,7 +24,6 @@ import javax.swing.*;
  */
 public class CustomerGUI extends javax.swing.JFrame {
     private DefaultTableModel model = new DefaultTableModel();
-    
     private String[] column = {"Vendor", "ID", "Item Name", "Description", "Price"};
     Customer loggedIn;
     private static final String CUST_CREDS_PATH = "programData\\customerCreds.txt";

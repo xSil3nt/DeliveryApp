@@ -1,0 +1,2 @@
+Vendor1;101|Rice|Simple Rice Dish|5;102|Burger|Chicken Burger|10;103|Salad|Simple Veggie Salad|7;
+Vendor2;201|Juice|Refreshing juice|3;202|Milkshake|Cool milkshake description here|5;203|3rd item|3rd item desc here|12;204|4rd item|4rd item desc here|20;
