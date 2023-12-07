@@ -105,7 +105,6 @@ public class VendorGUI extends javax.swing.JFrame {
             }
             reader.close();
         } catch (IOException e) {
-            // Handle the exception (e.g., show an error message)
             e.printStackTrace();
         } catch (ParseException ex) {
             Logger.getLogger(VendorGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -267,7 +266,6 @@ public class VendorGUI extends javax.swing.JFrame {
     private void tb_ordersMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_ordersMouseReleased
         int selectedRow = tb_orders.getSelectedRow();
         String selectedOrderStatus = (String) tb_orders.getValueAt(selectedRow, 7);
-        System.out.println(selectedOrderStatus);
         if (selectedOrderStatus.equals("PENDING")) {
             bt_accept.setEnabled(true);
             bt_decline.setEnabled(true);
