@@ -18,6 +18,7 @@ public class Order {
         ON_THE_WAY,
         COMPLETED,
         CANCELED,
+        DELIVERY_PENDING,
         UNKNOWN
     }
     
