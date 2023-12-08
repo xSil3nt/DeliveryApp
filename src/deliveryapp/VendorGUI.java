@@ -40,6 +40,7 @@ public class VendorGUI extends javax.swing.JFrame {
      */
     public VendorGUI(String username, String password) {
         initComponents();
+        setLocationRelativeTo(null);
         initTable();
         loggedIn = new Vendor(username, password);
         lb_welcome.setText("Welcome "+ loggedIn.getUsername());
@@ -50,6 +51,7 @@ public class VendorGUI extends javax.swing.JFrame {
     public VendorGUI() {
         String username = "Vendor1", password = "test";
         initComponents();
+        setLocationRelativeTo(null);
         initTable();
         loggedIn = new Vendor(username, password);
         lb_welcome.setText("Welcome "+ loggedIn.getUsername());
@@ -99,7 +101,7 @@ public class VendorGUI extends javax.swing.JFrame {
                 String itemNames = itemNamesBuilder.toString().replaceAll(", $", "");
 
                 // Check if the vendor matches the logged-in vendor
-                if (vendor.equals(loggedIn.getUsername())) {
+                if (vendor.equals(loggedIn.getUsername()) && !((status.equals("COMPLETED")) || status.equals("CANCELLED"))) {
                     // Add the parsed data to the table model
                     model.addRow(new Object[]{orderID, date, customer, cartItems, itemNames, orderTotal, location, status});
                 }
@@ -153,6 +155,8 @@ public class VendorGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tb_orders = new javax.swing.JTable();
         bt_reviews = new javax.swing.JButton();
+        bt_revenue = new javax.swing.JButton();
+        bt_history = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -209,6 +213,15 @@ public class VendorGUI extends javax.swing.JFrame {
             }
         });
 
+        bt_revenue.setText("Revenue Dashboard");
+
+        bt_history.setText("Order History");
+        bt_history.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_historyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -228,7 +241,9 @@ public class VendorGUI extends javax.swing.JFrame {
                     .addComponent(bt_decline, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bt_accept, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bt_menuOptions, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bt_reviews, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(bt_reviews, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bt_revenue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bt_history, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(21, 21, 21))
         );
         layout.setVerticalGroup(
@@ -252,7 +267,11 @@ public class VendorGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(bt_ready)
                         .addGap(18, 18, 18)
-                        .addComponent(bt_reviews))
+                        .addComponent(bt_reviews)
+                        .addGap(18, 18, 18)
+                        .addComponent(bt_revenue)
+                        .addGap(18, 18, 18)
+                        .addComponent(bt_history))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
@@ -414,6 +433,7 @@ public class VendorGUI extends javax.swing.JFrame {
 
         // Set menu window size and visibility
         menuWindow.pack();
+        menuWindow.setLocationRelativeTo(null);
         menuWindow.setVisible(true);
     }//GEN-LAST:event_bt_menuOptionsActionPerformed
 
@@ -427,7 +447,6 @@ public class VendorGUI extends javax.swing.JFrame {
                     String newLine = null;
                     
                     String currentVendor = parts[0].trim();
-                    System.out.println(parts.length);
 
                     // Check if the current line is for the right vendor
                     if (currentVendor.equals(vendor)) {
@@ -611,6 +630,57 @@ public class VendorGUI extends javax.swing.JFrame {
         loggedIn.notifyCustomer(customer, "Order "+ selectedOrderId + " has been declined/cancelled by vendor.");
     }//GEN-LAST:event_bt_declineActionPerformed
 
+    private void bt_historyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_historyActionPerformed
+        showOrdersTable();
+    }//GEN-LAST:event_bt_historyActionPerformed
+    
+    private void showOrdersTable() {
+        DefaultTableModel historyModel = new DefaultTableModel();
+        historyModel.addColumn("Order ID");
+        historyModel.addColumn("Customer");
+        historyModel.addColumn("Timestamp");
+        historyModel.addColumn("Revenue");
+        historyModel.addColumn("Status");
+
+        JTable historyTable = new JTable(historyModel);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(ORDERS_PATH))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.contains("COMPLETED") || line.contains("CANCELLED")) {
+                    String[] orderTokens = line.split(";");
+                    String customer = orderTokens[0];
+                    String orderId = orderTokens[2];
+                    String timestamp = orderTokens[3];
+                    String priceStr = orderTokens[6];
+                    double revenue = Double.parseDouble(priceStr); // Corrected the parsing to double
+                    String location = orderTokens[5];
+                    String status = orderTokens[7];
+
+                    historyModel.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JScrollPane scrollPane = new JScrollPane(historyTable);
+        add(scrollPane);
+
+
+        JFrame newFrame = new JFrame("Order History");
+        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JScrollPane newScrollPane = new JScrollPane(historyTable);
+        newFrame.add(newScrollPane);
+
+        newFrame.pack();
+        newFrame.setLocationRelativeTo(null);
+        newFrame.setVisible(true);
+    }
+    
+    
+    
     private void updateOrderStatus(String orderId, String newStatus) {
         try {
             File file = new File(ORDERS_PATH);
@@ -705,8 +775,10 @@ public class VendorGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bt_accept;
     private javax.swing.JButton bt_decline;
+    private javax.swing.JButton bt_history;
     private javax.swing.JButton bt_menuOptions;
     private javax.swing.JButton bt_ready;
+    private javax.swing.JButton bt_revenue;
     private javax.swing.JButton bt_reviews;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lb_title;

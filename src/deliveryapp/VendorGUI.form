@@ -42,6 +42,8 @@
                   <Component id="bt_accept" alignment="1" max="32767" attributes="0"/>
                   <Component id="bt_menuOptions" alignment="1" max="32767" attributes="0"/>
                   <Component id="bt_reviews" max="32767" attributes="0"/>
+                  <Component id="bt_revenue" max="32767" attributes="0"/>
+                  <Component id="bt_history" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
           </Group>
@@ -72,6 +74,10 @@
                       <Component id="bt_ready" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="bt_reviews" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="bt_revenue" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="bt_history" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jScrollPane1" alignment="0" min="-2" pref="346" max="-2" attributes="0"/>
               </Group>
@@ -163,6 +169,19 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_reviewsActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="bt_revenue">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Revenue Dashboard"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="bt_history">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Order History"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_historyActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

@@ -342,7 +342,6 @@ public class CustomerGUI extends javax.swing.JFrame {
                     String notification = parts[1];
 
                     if (loggedIn != null && loggedIn.getUsername().equals(customerId)) {
-                        System.out.println("Notification for " + customerId + ": " + notification);
                         JOptionPane.showMessageDialog(null, customerId + ": " + notification, "Notification", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         lines.add(line);
@@ -895,7 +894,6 @@ private void writeReview(String orderId, String vendorName, String date, String 
                     // Extract specific details for display
 
                     String cartString = orderDetails[4];
-                    System.out.println(cartString);
                     // Remove brackets and split the string by ", "
                     String[] elementsAsString = cartString.substring(1, cartString.length() - 1).split(", ");
 
