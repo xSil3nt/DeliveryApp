@@ -736,8 +736,10 @@ public class CustomerGUI extends javax.swing.JFrame {
         JPanel buttonPanel = new JPanel();
         JButton reorderButton = new JButton("Reorder");
         JButton writeReviewButton = new JButton("Write Review");
+        JButton cancelOrderButton = new JButton("Cancel Order");
         buttonPanel.add(reorderButton);
         buttonPanel.add(writeReviewButton);
+        buttonPanel.add(cancelOrderButton);
 
         // Create JTable
         String[] columnNames = {"OrderID", "Vendor", "Date", "Location", "Cart", "Total", "Status"};
@@ -798,6 +800,58 @@ public class CustomerGUI extends javax.swing.JFrame {
                 } else {
                     // Show a warning if no order is selected
                     JOptionPane.showMessageDialog(orderHistoryFrame, "Please select an order to write a review.", "Write Review Error", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+        
+        // ActionListener for Cancel Order button
+        cancelOrderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected row
+                int selectedRow = orderTable.getSelectedRow();
+
+                if (selectedRow != -1) {
+                    // Get the order status
+                    String orderStatus = (String) orderTable.getValueAt(selectedRow, 6);
+
+                    // Check if the order status is PENDING
+                    if ("PENDING".equals(orderStatus)) {
+                        // cancel order
+                        String selectedOrderId = (String) orderTable.getValueAt(selectedRow, 0);
+                        // Set table status to cancelled too
+                        orderTable.setValueAt("CANCELLED", selectedRow, 6);
+                        try (BufferedReader reader = new BufferedReader(new FileReader(ORDERS_PATH))) {
+                            StringBuilder fileContent = new StringBuilder();
+                            String line;
+
+                            while ((line = reader.readLine()) != null) {
+                                String[] fields = line.split(";");
+
+                                // check orderid
+                                if (fields.length > 2 && fields[2].equals(selectedOrderId)) {
+                                    // change status
+                                    fields[7] = "CANCELLED";
+                                }
+                                String updatedLine = String.join(";", fields);
+                                fileContent.append(updatedLine).append("\n");
+                            }
+
+                            try (BufferedWriter writer = new BufferedWriter(new FileWriter(ORDERS_PATH))) {
+                                writer.write(fileContent.toString());
+                            }
+
+                        } catch (IOException ex) {
+                        }
+                        
+                        JOptionPane.showMessageDialog(orderHistoryFrame, "Order canceled successfully.", "Cancel Order", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        // Show a warning if the order status is not PENDING
+                        JOptionPane.showMessageDialog(orderHistoryFrame, "Only orders with status PENDING can be canceled.", "Cancel Order Error", JOptionPane.WARNING_MESSAGE);
+                    }
+                } else {
+                    // Show a warning if no order is selected
+                    JOptionPane.showMessageDialog(orderHistoryFrame, "Please select an order to cancel.", "Cancel Order Error", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
