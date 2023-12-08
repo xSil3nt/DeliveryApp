@@ -540,7 +540,7 @@ public class VendorGUI extends javax.swing.JFrame {
             bt_accept.setEnabled(false);
             bt_decline.setEnabled(false);
         }
-        if (selectedOrderStatus.equals("IN PROGRESS")) {
+        if (selectedOrderStatus.equals("IN_PROGRESS")) {
             bt_ready.setEnabled(true);
             bt_decline.setEnabled(true);
         } else {
@@ -558,7 +558,10 @@ public class VendorGUI extends javax.swing.JFrame {
         tb_orders.setValueAt(newStatus, selectedRow, 7);
         
         String selectedOrderId = (String) tb_orders.getValueAt(selectedRow, 0);
-        updateOrderStatus(selectedOrderId, newStatus); 
+        updateOrderStatus(selectedOrderId, newStatus);
+        bt_accept.setEnabled(false);
+        bt_decline.setEnabled(false);
+        bt_ready.setEnabled(false);
     }//GEN-LAST:event_bt_readyActionPerformed
 
     private void bt_reviewsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_reviewsActionPerformed
@@ -609,6 +612,9 @@ public class VendorGUI extends javax.swing.JFrame {
         //Notify customer about order upadte
         String customer = (String) tb_orders.getValueAt(selectedRow, 2);
         loggedIn.notifyCustomer(customer, "Order "+ selectedOrderId + " has been accepted by vendor.");
+        bt_accept.setEnabled(false);
+        bt_decline.setEnabled(true);
+        bt_ready.setEnabled(true);
     }//GEN-LAST:event_bt_acceptActionPerformed
 
     private void bt_declineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_declineActionPerformed
@@ -622,6 +628,9 @@ public class VendorGUI extends javax.swing.JFrame {
         //Notify customer about order upadte
         String customer = (String) tb_orders.getValueAt(selectedRow, 2);
         loggedIn.notifyCustomer(customer, "Order "+ selectedOrderId + " has been declined/cancelled by vendor.");
+        bt_accept.setEnabled(false);
+        bt_decline.setEnabled(false);
+        bt_ready.setEnabled(false);
     }//GEN-LAST:event_bt_declineActionPerformed
 
     private void bt_historyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_historyActionPerformed
