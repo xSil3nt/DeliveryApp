@@ -633,7 +633,6 @@ public class VendorGUI extends javax.swing.JFrame {
     private void bt_historyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_historyActionPerformed
         showOrdersTable();
     }//GEN-LAST:event_bt_historyActionPerformed
-    
     private void showOrdersTable() {
         DefaultTableModel historyModel = new DefaultTableModel();
         historyModel.addColumn("Order ID");
@@ -656,6 +655,10 @@ public class VendorGUI extends javax.swing.JFrame {
                     double revenue = Double.parseDouble(priceStr); // Corrected the parsing to double
                     String location = orderTokens[5];
                     String status = orderTokens[7];
+
+                    if (location.equals("customer")) {
+                        revenue -= 2; // Subtract 2 from revenue if the location is "customer"
+                    } 
 
                     historyModel.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
                 }
