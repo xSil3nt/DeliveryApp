@@ -7,7 +7,6 @@ package deliveryapp;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -596,7 +595,7 @@ public class VendorGUI extends javax.swing.JFrame {
         
         //Notify customer about order upadte
         String customer = (String) tb_orders.getValueAt(selectedRow, 2);
-        notifyCustomer(customer, "Order "+ selectedOrderId + " has been accepted by vendor.");
+        loggedIn.notifyCustomer(customer, "Order "+ selectedOrderId + " has been accepted by vendor.");
     }//GEN-LAST:event_bt_acceptActionPerformed
 
     private void bt_declineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_declineActionPerformed
@@ -609,7 +608,7 @@ public class VendorGUI extends javax.swing.JFrame {
         
         //Notify customer about order upadte
         String customer = (String) tb_orders.getValueAt(selectedRow, 2);
-        notifyCustomer(customer, "Order "+ selectedOrderId + " has been declined/cancelled by vendor.");
+        loggedIn.notifyCustomer(customer, "Order "+ selectedOrderId + " has been declined/cancelled by vendor.");
     }//GEN-LAST:event_bt_declineActionPerformed
 
     private void updateOrderStatus(String orderId, String newStatus) {
@@ -640,16 +639,6 @@ public class VendorGUI extends javax.swing.JFrame {
             e.printStackTrace();
             // Handle exception as needed
         }
-    }
-    
-    public void notifyCustomer(String customer, String notification) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(CUST_NOTIFICATIONS_PATH, true))) {
-            String entry = customer + ";" + notification;
-            writer.write(entry);
-            writer.newLine(); 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }        
     }
     
     private void parseReviews(DefaultTableModel reviewTableModel) {
