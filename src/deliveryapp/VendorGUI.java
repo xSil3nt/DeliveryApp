@@ -158,7 +158,6 @@ public class VendorGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tb_orders = new javax.swing.JTable();
         bt_reviews = new javax.swing.JButton();
-        bt_revenue = new javax.swing.JButton();
         bt_history = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -216,8 +215,6 @@ public class VendorGUI extends javax.swing.JFrame {
             }
         });
 
-        bt_revenue.setText("Revenue Dashboard");
-
         bt_history.setText("Order History");
         bt_history.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -245,7 +242,6 @@ public class VendorGUI extends javax.swing.JFrame {
                     .addComponent(bt_accept, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bt_menuOptions, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bt_reviews, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bt_revenue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bt_history, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(21, 21, 21))
         );
@@ -271,9 +267,7 @@ public class VendorGUI extends javax.swing.JFrame {
                         .addComponent(bt_ready)
                         .addGap(18, 18, 18)
                         .addComponent(bt_reviews)
-                        .addGap(18, 18, 18)
-                        .addComponent(bt_revenue)
-                        .addGap(18, 18, 18)
+                        .addGap(52, 52, 52)
                         .addComponent(bt_history))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(19, Short.MAX_VALUE))
@@ -636,138 +630,106 @@ public class VendorGUI extends javax.swing.JFrame {
     private void bt_historyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_historyActionPerformed
         showOrdersTable();
     }//GEN-LAST:event_bt_historyActionPerformed
-//    private void showOrdersTable() {
-//        DefaultTableModel historyModel = new DefaultTableModel();
-//        historyModel.addColumn("Order ID");
-//        historyModel.addColumn("Customer");
-//        historyModel.addColumn("Timestamp");
-//        historyModel.addColumn("Revenue");
-//        historyModel.addColumn("Status");
-//
-//        JTable historyTable = new JTable(historyModel);
-//
-//        try (BufferedReader br = new BufferedReader(new FileReader(ORDERS_PATH))) {
-//            String line;
-//            while ((line = br.readLine()) != null) {
-//                if (line.contains("COMPLETED") || line.contains("CANCELLED")) {
-//                    String[] orderTokens = line.split(";");
-//                    String customer = orderTokens[0];
-//                    String orderId = orderTokens[2];
-//                    String timestamp = orderTokens[3];
-//                    String priceStr = orderTokens[6];
-//                    double revenue = Double.parseDouble(priceStr); // Corrected the parsing to double
-//                    String location = orderTokens[5];
-//                    String status = orderTokens[7];
-//
-//                    historyModel.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        JScrollPane scrollPane = new JScrollPane(historyTable);
-//        add(scrollPane);
-//
-//
-//        JFrame newFrame = new JFrame("Order History");
-//        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//
-//        JScrollPane newScrollPane = new JScrollPane(historyTable);
-//        newFrame.add(newScrollPane);
-//
-//        newFrame.pack();
-//        newFrame.setLocationRelativeTo(null);
-//        newFrame.setVisible(true);
-//    }
-private void showOrdersTable() {
-    // Create the drop-down menu
-    JComboBox<String> filterComboBox = new JComboBox<>(new String[]{"All orders", "Last day", "Last month", "Last quarter"});
 
-    // Create the history table model
-    DefaultTableModel historyModel = new DefaultTableModel();
-    historyModel.addColumn("Order ID");
-    historyModel.addColumn("Customer");
-    historyModel.addColumn("Timestamp");
-    historyModel.addColumn("Revenue");
-    historyModel.addColumn("Status");
+    private void showOrdersTable() {
+        // Create the drop-down menu
+        JComboBox<String> filterComboBox = new JComboBox<>(new String[]{"All orders", "Last day", "Last month", "Last quarter"});
 
-    JTable historyTable = new JTable(historyModel);
+        // Create the history table model
+        DefaultTableModel historyModel = new DefaultTableModel();
+        historyModel.addColumn("Order ID");
+        historyModel.addColumn("Customer");
+        historyModel.addColumn("Timestamp");
+        historyModel.addColumn("Revenue");
+        historyModel.addColumn("Status");
 
-    // Add action listener to update table on filter change
-    filterComboBox.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            updateTable(historyModel, filterComboBox.getSelectedItem().toString());
-        }
-    });
+        JTable historyTable = new JTable(historyModel);
 
-    try (BufferedReader br = new BufferedReader(new FileReader(ORDERS_PATH))) {
-        String line;
-        while ((line = br.readLine()) != null) {
-            if (line.contains("COMPLETED") || line.contains("CANCELLED")) {
-                String[] orderTokens = line.split(";");
+        // Create a JTextField to display total revenue
+        JTextField totalRevenueTextField = new JTextField();
+        totalRevenueTextField.setEditable(false);
 
-                // Convert timestamp to date object
-                String timestamp = orderTokens[3];
-                Date orderDate = parseTimestamp(timestamp);
+        // Add action listener to update table and total revenue on filter change
+        filterComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTable(historyModel, filterComboBox.getSelectedItem().toString(), totalRevenueTextField);
+            }
+        });
 
-                // Check if order matches filter
-                boolean showOrder = true;
-                switch (filterComboBox.getSelectedItem().toString()) {
-                    case "Last day":
-                        showOrder = isLastDay(orderDate);
-                        break;
-                    case "Last month":
-                        showOrder = isLastMonth(orderDate);
-                        break;
-                    case "Last quarter":
-                        showOrder = isLastQuarter(orderDate);
-                        break;
-                    default:
-                        // Show all
-                        break;
-                }
+        try (BufferedReader br = new BufferedReader(new FileReader(ORDERS_PATH))) {
+            double totalRevenue = 0.0;
 
-                if (showOrder) {
-                    String customer = orderTokens[0];
-                    String orderId = orderTokens[2];
-                    String revenueStr = orderTokens[6];
-                    double revenue = Double.parseDouble(revenueStr);
-                    String location = orderTokens[5];
-                    String status = orderTokens[7];
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.contains("COMPLETED") || line.contains("CANCELLED")) {
+                    String[] orderTokens = line.split(";");
 
-                    historyModel.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
+                    // Convert timestamp to date object
+                    String timestamp = orderTokens[3];
+                    Date orderDate = parseTimestamp(timestamp);
+
+                    // Check if order matches filter
+                    boolean showOrder = true;
+                    switch (filterComboBox.getSelectedItem().toString()) {
+                        case "Last day":
+                            showOrder = isLastDay(orderDate);
+                            break;
+                        case "Last month":
+                            showOrder = isLastMonth(orderDate);
+                            break;
+                        case "Last quarter":
+                            showOrder = isLastQuarter(orderDate);
+                            break;
+                        default:
+                            // Show all
+                            break;
+                    }
+
+                    if (showOrder) {
+                        String customer = orderTokens[0];
+                        String orderId = orderTokens[2];
+                        String revenueStr = orderTokens[6];
+                        double revenue = Double.parseDouble(revenueStr);
+                        String location = orderTokens[5];
+                        String status = orderTokens[7];
+
+                        historyModel.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
+
+                        // Update total revenue
+                        totalRevenue += revenue;
+                    }
                 }
             }
+
+            // Set the total revenue in the text field
+            totalRevenueTextField.setText("Total Revenue: $" + String.format("%.2f", totalRevenue));
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (IOException e) {
-        e.printStackTrace();
+
+        // Add the drop-down menu, total revenue text field, and history table to the frame
+        JPanel panel = new JPanel(new BorderLayout());
+
+        JPanel dropdownPanel = new JPanel();
+        dropdownPanel.add(new JLabel("Filter by: "));
+        dropdownPanel.add(filterComboBox);
+
+        panel.add(dropdownPanel, BorderLayout.NORTH);
+        panel.add(totalRevenueTextField, BorderLayout.SOUTH);
+
+        JScrollPane scrollPane = new JScrollPane(historyTable);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        JFrame newFrame = new JFrame("Order History");
+        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        newFrame.add(panel);
+
+        newFrame.pack();
+        newFrame.setLocationRelativeTo(null);
+        newFrame.setVisible(true);
     }
-
-    // Add the drop-down menu to the frame
-    JPanel panel = new JPanel(new BorderLayout()); // Use BorderLayout for proper layout
-
-    // Create a nested panel for the dropdown, align it to the top-left
-    JPanel dropdownPanel = new JPanel();
-    dropdownPanel.add(new JLabel("Filter by: "));
-    dropdownPanel.add(filterComboBox);
-
-    panel.add(dropdownPanel, BorderLayout.NORTH); // Align to the top
-
-    // Add the scroll pane to the frame
-    JScrollPane scrollPane = new JScrollPane(historyTable);
-    panel.add(scrollPane, BorderLayout.CENTER);
-
-    // Add the panel to the frame
-    JFrame newFrame = new JFrame("Order History");
-    newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    newFrame.add(panel);
-
-    newFrame.pack();
-    newFrame.setLocationRelativeTo(null);
-    newFrame.setVisible(true);
-}
 
     private Date parseTimestamp(String timestamp) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
@@ -801,9 +763,11 @@ private void showOrdersTable() {
         return date.compareTo(lastQuarter) >= 0;
     }
 
-    private void updateTable(DefaultTableModel model, String filter) {
+    private void updateTable(DefaultTableModel model, String filter, JTextField totalRevenueTextField) {
         // Clear existing rows
         model.setRowCount(0);
+
+        double totalRevenue = 0.0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(ORDERS_PATH))) {
             String line;
@@ -837,11 +801,19 @@ private void showOrdersTable() {
                         String status = orderTokens[7];
 
                         model.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
+
+                        if (status.equals("COMPLETED")){
+                            totalRevenue += revenue;
+                        }
                     }
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        // Set the total revenue in the text field
+        totalRevenueTextField.setText("Total Revenue: $" + String.format("%.2f", totalRevenue));
     }
     
     
@@ -940,7 +912,6 @@ private void showOrdersTable() {
     private javax.swing.JButton bt_history;
     private javax.swing.JButton bt_menuOptions;
     private javax.swing.JButton bt_ready;
-    private javax.swing.JButton bt_revenue;
     private javax.swing.JButton bt_reviews;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lb_title;
