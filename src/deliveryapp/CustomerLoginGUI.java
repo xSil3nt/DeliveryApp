@@ -21,6 +21,7 @@ public class CustomerLoginGUI extends javax.swing.JFrame {
      */
     public CustomerLoginGUI() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**

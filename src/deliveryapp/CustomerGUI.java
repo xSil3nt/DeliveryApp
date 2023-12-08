@@ -286,6 +286,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         tb_menu.setRowSelectionAllowed(true);
         tb_menu.setColumnSelectionAllowed(false);
         tb_menu.setDefaultEditor(Object.class, null);
+        this.setLocationRelativeTo(null);
 
         // Set the preferred width for specific columns
         columnModel.getColumn(0).setPreferredWidth(100); // Vendor column
@@ -429,17 +430,10 @@ public class CustomerGUI extends javax.swing.JFrame {
                 }
             }
         });
-
-        // Create a scroll pane for the table
+        viewCartDialog.setLocationRelativeTo(null);
         JScrollPane scrollPane = new JScrollPane(cartTable);
-
-        // Add the scroll pane to the dialog
         viewCartDialog.add(scrollPane);
-
-        // Set the size of the dialog
         viewCartDialog.setSize(500, 300);
-
-        // Make the dialog visible
         viewCartDialog.setVisible(true);
     }//GEN-LAST:event_bt_cartActionPerformed
 
@@ -1129,7 +1123,7 @@ private void writeReview(String orderId, String vendorName, String date, String 
             }
         });
 
-        // Show the dialog
+        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
     

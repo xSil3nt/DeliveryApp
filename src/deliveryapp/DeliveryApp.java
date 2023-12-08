@@ -1,9 +1,13 @@
 package deliveryapp;
 
+import adminPackage.Admin_Dashboard;
+
+
 public class DeliveryApp {
 
     public static void main(String[] args) {
-        System.out.println("hello");
+        //new Admin_Dashboard().setVisible(true);
+        new CustomerLoginGUI().setVisible(true);
     }
 
 }
