@@ -116,7 +116,7 @@ public class CustomerLoginGUI extends javax.swing.JFrame {
 
                     if (tf_username.getText().equals(storedUsername) && tf_password.getText().equals(storedPassword)) {
                         // Username and password match
-                        int balance = Integer.parseInt(parts[2]);
+                        double balance = Double.parseDouble(parts[2]);
                         String location = parts[3];
                         String phone = parts[4];
                         

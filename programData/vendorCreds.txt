@@ -1,1 +1,1 @@
-vendorUsername;vendorPassword;
+Vendor1;123

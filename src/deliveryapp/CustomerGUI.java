@@ -35,7 +35,7 @@ public class CustomerGUI extends javax.swing.JFrame {
     /**
      * Creates new form CustomerGUI
      */
-    public CustomerGUI(String username, String password, int balance, String location, String phone) {
+    public CustomerGUI(String username, String password, double balance, String location, String phone) {
         initComponents();
         loggedIn = new Customer(username, password, balance);
         loggedIn.setLocation(location);

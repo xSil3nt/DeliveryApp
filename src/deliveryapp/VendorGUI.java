@@ -33,7 +33,7 @@ public class VendorGUI extends javax.swing.JFrame {
     private static final String MENU_PATH = "programData\\menu.txt";
     private static final String ORDERS_PATH = "programData\\orders.txt";
     private static final String REVIEWS_PATH = "programData\\reviews.txt";
-    private static final String CUST_NOTIFICATIONS_PATH = "programData\\custNotifications.txt";
+    private static final String CUST_CREDS_PATH = "programData\\customerCreds.txt";
     
     private DefaultTableModel model = new DefaultTableModel();
     private String[] column = {"Order ID", "Date", "Customer", "Cart Items", "Item Names", "Order Total", "Location", "Status"};
@@ -625,14 +625,65 @@ public class VendorGUI extends javax.swing.JFrame {
         String selectedOrderId = (String) tb_orders.getValueAt(selectedRow, 0);
         updateOrderStatus(selectedOrderId, newStatus);
         
-        //Notify customer about order upadte
+        // Notify customer about order upadte
         String customer = (String) tb_orders.getValueAt(selectedRow, 2);
         loggedIn.notifyCustomer(customer, "Order "+ selectedOrderId + " has been declined/cancelled by vendor.");
         bt_accept.setEnabled(false);
         bt_decline.setEnabled(false);
         bt_ready.setEnabled(false);
+        
+        // Refund customer
+        double refundAmount = (double) tb_orders.getValueAt(selectedRow, 5);
+        String location = (String) tb_orders.getValueAt(selectedRow, 6);
+        if (!(location.equals("Self Pickup/Dine In"))) {
+            refundAmount = refundAmount + 2;
+        }
+        refundCustomer(customer, refundAmount);
     }//GEN-LAST:event_bt_declineActionPerformed
 
+    private void refundCustomer(String customer, double refundAmount) {
+        try {
+                // Read the content of the file
+                File file = new File(CUST_CREDS_PATH);
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                StringBuilder content = new StringBuilder();
+                String line;
+
+                // Iterate through the lines, update the balance, and build the new content
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(";");
+                    if (parts.length == 5) {
+                        String username = parts[0];
+                        String password = parts[1];
+                        String balance = parts[2];
+                        String currentLocation = parts[3];
+                        String phone = parts[4];
+
+                        if (username.equals(customer)) {
+                            // Update the balance for the specific user
+                            balance = balance + refundAmount;
+                        }
+
+                        // Reconstruct the line with the updated information
+                        String updatedLine = username + ";" + password + ";" + balance + ";" + currentLocation + ";" + phone;
+                        content.append(updatedLine).append("\n");
+                    }
+                }
+
+                // Close the reader
+                reader.close();
+
+                // Write the updated content back to the file
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                writer.write(content.toString());
+                writer.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error updating customer balance.");
+            }
+    }
+    
     private void bt_historyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_historyActionPerformed
         showOrdersTable();
     }//GEN-LAST:event_bt_historyActionPerformed
