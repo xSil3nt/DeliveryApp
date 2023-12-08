@@ -14,9 +14,12 @@ import javax.swing.table.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -633,55 +636,213 @@ public class VendorGUI extends javax.swing.JFrame {
     private void bt_historyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_historyActionPerformed
         showOrdersTable();
     }//GEN-LAST:event_bt_historyActionPerformed
-    private void showOrdersTable() {
-        DefaultTableModel historyModel = new DefaultTableModel();
-        historyModel.addColumn("Order ID");
-        historyModel.addColumn("Customer");
-        historyModel.addColumn("Timestamp");
-        historyModel.addColumn("Revenue");
-        historyModel.addColumn("Status");
+//    private void showOrdersTable() {
+//        DefaultTableModel historyModel = new DefaultTableModel();
+//        historyModel.addColumn("Order ID");
+//        historyModel.addColumn("Customer");
+//        historyModel.addColumn("Timestamp");
+//        historyModel.addColumn("Revenue");
+//        historyModel.addColumn("Status");
+//
+//        JTable historyTable = new JTable(historyModel);
+//
+//        try (BufferedReader br = new BufferedReader(new FileReader(ORDERS_PATH))) {
+//            String line;
+//            while ((line = br.readLine()) != null) {
+//                if (line.contains("COMPLETED") || line.contains("CANCELLED")) {
+//                    String[] orderTokens = line.split(";");
+//                    String customer = orderTokens[0];
+//                    String orderId = orderTokens[2];
+//                    String timestamp = orderTokens[3];
+//                    String priceStr = orderTokens[6];
+//                    double revenue = Double.parseDouble(priceStr); // Corrected the parsing to double
+//                    String location = orderTokens[5];
+//                    String status = orderTokens[7];
+//
+//                    historyModel.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
+//                }
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        JScrollPane scrollPane = new JScrollPane(historyTable);
+//        add(scrollPane);
+//
+//
+//        JFrame newFrame = new JFrame("Order History");
+//        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//
+//        JScrollPane newScrollPane = new JScrollPane(historyTable);
+//        newFrame.add(newScrollPane);
+//
+//        newFrame.pack();
+//        newFrame.setLocationRelativeTo(null);
+//        newFrame.setVisible(true);
+//    }
+private void showOrdersTable() {
+    // Create the drop-down menu
+    JComboBox<String> filterComboBox = new JComboBox<>(new String[]{"All orders", "Last day", "Last month", "Last quarter"});
 
-        JTable historyTable = new JTable(historyModel);
+    // Create the history table model
+    DefaultTableModel historyModel = new DefaultTableModel();
+    historyModel.addColumn("Order ID");
+    historyModel.addColumn("Customer");
+    historyModel.addColumn("Timestamp");
+    historyModel.addColumn("Revenue");
+    historyModel.addColumn("Status");
+
+    JTable historyTable = new JTable(historyModel);
+
+    // Add action listener to update table on filter change
+    filterComboBox.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            updateTable(historyModel, filterComboBox.getSelectedItem().toString());
+        }
+    });
+
+    try (BufferedReader br = new BufferedReader(new FileReader(ORDERS_PATH))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (line.contains("COMPLETED") || line.contains("CANCELLED")) {
+                String[] orderTokens = line.split(";");
+
+                // Convert timestamp to date object
+                String timestamp = orderTokens[3];
+                Date orderDate = parseTimestamp(timestamp);
+
+                // Check if order matches filter
+                boolean showOrder = true;
+                switch (filterComboBox.getSelectedItem().toString()) {
+                    case "Last day":
+                        showOrder = isLastDay(orderDate);
+                        break;
+                    case "Last month":
+                        showOrder = isLastMonth(orderDate);
+                        break;
+                    case "Last quarter":
+                        showOrder = isLastQuarter(orderDate);
+                        break;
+                    default:
+                        // Show all
+                        break;
+                }
+
+                if (showOrder) {
+                    String customer = orderTokens[0];
+                    String orderId = orderTokens[2];
+                    String revenueStr = orderTokens[6];
+                    double revenue = Double.parseDouble(revenueStr);
+                    String location = orderTokens[5];
+                    String status = orderTokens[7];
+
+                    historyModel.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
+                }
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    // Add the drop-down menu to the frame
+    JPanel panel = new JPanel(new BorderLayout()); // Use BorderLayout for proper layout
+
+    // Create a nested panel for the dropdown, align it to the top-left
+    JPanel dropdownPanel = new JPanel();
+    dropdownPanel.add(new JLabel("Filter by: "));
+    dropdownPanel.add(filterComboBox);
+
+    panel.add(dropdownPanel, BorderLayout.NORTH); // Align to the top
+
+    // Add the scroll pane to the frame
+    JScrollPane scrollPane = new JScrollPane(historyTable);
+    panel.add(scrollPane, BorderLayout.CENTER);
+
+    // Add the panel to the frame
+    JFrame newFrame = new JFrame("Order History");
+    newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    newFrame.add(panel);
+
+    newFrame.pack();
+    newFrame.setLocationRelativeTo(null);
+    newFrame.setVisible(true);
+}
+
+    private Date parseTimestamp(String timestamp) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+        try {
+            dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Singapore")); 
+            return dateFormat.parse(timestamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null; 
+        }
+    }
+
+    private boolean isLastDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date yesterday = calendar.getTime();
+        return date.compareTo(yesterday) >= 0;
+    }
+
+    private boolean isLastMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -1);
+        Date lastMonth = calendar.getTime();
+        return date.compareTo(lastMonth) >= 0;
+    }
+
+    private boolean isLastQuarter(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -3);
+        Date lastQuarter = calendar.getTime();
+        return date.compareTo(lastQuarter) >= 0;
+    }
+
+    private void updateTable(DefaultTableModel model, String filter) {
+        // Clear existing rows
+        model.setRowCount(0);
 
         try (BufferedReader br = new BufferedReader(new FileReader(ORDERS_PATH))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.contains("COMPLETED") || line.contains("CANCELLED")) {
                     String[] orderTokens = line.split(";");
-                    String customer = orderTokens[0];
-                    String orderId = orderTokens[2];
+
+                    // Convert timestamp to date object
                     String timestamp = orderTokens[3];
-                    String priceStr = orderTokens[6];
-                    double revenue = Double.parseDouble(priceStr); // Corrected the parsing to double
-                    String location = orderTokens[5];
-                    String status = orderTokens[7];
+                    Date orderDate = parseTimestamp(timestamp);
 
-                    if (location.equals("customer")) {
-                        revenue -= 2; // Subtract 2 from revenue if the location is "customer"
-                    } 
+                    // Check if order matches filter
+                    boolean showOrder = true;
+                    switch (filter) {
+                        case "Last day":
+                            showOrder = isLastDay(orderDate);
+                            break;
+                        case "Last month":
+                            showOrder = isLastMonth(orderDate);
+                            break;
+                        case "Last quarter":
+                            showOrder = isLastQuarter(orderDate);
+                            break;
+                    }
 
-                    historyModel.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
+                    if (showOrder) {
+                        String customer = orderTokens[0];
+                        String orderId = orderTokens[2];
+                        String revenueStr = orderTokens[6];
+                        double revenue = Double.parseDouble(revenueStr);
+                        String status = orderTokens[7];
+
+                        model.addRow(new Object[]{orderId, customer, timestamp, String.valueOf(revenue), status});
+                    }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
         }
-
-        JScrollPane scrollPane = new JScrollPane(historyTable);
-        add(scrollPane);
-
-
-        JFrame newFrame = new JFrame("Order History");
-        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        JScrollPane newScrollPane = new JScrollPane(historyTable);
-        newFrame.add(newScrollPane);
-
-        newFrame.pack();
-        newFrame.setLocationRelativeTo(null);
-        newFrame.setVisible(true);
     }
-    
     
     
     private void updateOrderStatus(String orderId, String newStatus) {
@@ -709,8 +870,6 @@ public class VendorGUI extends javax.swing.JFrame {
             }
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            // Handle exception as needed
         }
     }
     
