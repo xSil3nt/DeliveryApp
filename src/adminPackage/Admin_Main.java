@@ -282,7 +282,7 @@ else if ("Delivery Runner".equals(selectedType)) {
 else if ("Vendor".equals(selectedType)) {
  
     int response = JOptionPane.showConfirmDialog(this,
-        "User registration is for runner. Proceed?",
+        "User registration is for vendor. Proceed?",
         "Confirm",
         JOptionPane.YES_NO_OPTION,
         JOptionPane.QUESTION_MESSAGE);
