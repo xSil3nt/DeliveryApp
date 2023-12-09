@@ -1,6 +1,6 @@
 package deliveryapp;
 
-public class User {
+public abstract class User {
     private String username;
     private String password;
     

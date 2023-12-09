@@ -725,19 +725,19 @@ public class VendorGUI extends javax.swing.JFrame {
 
                     // Convert timestamp to date object
                     String timestamp = orderTokens[3];
-                    Date orderDate = parseTimestamp(timestamp);
+                    Date orderDate = loggedIn.parseTimestamp(timestamp);
 
                     // Check if order matches filter
                     boolean showOrder = true;
                     switch (filterComboBox.getSelectedItem().toString()) {
                         case "Last day":
-                            showOrder = isLastDay(orderDate);
+                            showOrder = loggedIn.isLastDay(orderDate);
                             break;
                         case "Last month":
-                            showOrder = isLastMonth(orderDate);
+                            showOrder = loggedIn.isLastMonth(orderDate);
                             break;
                         case "Last quarter":
-                            showOrder = isLastQuarter(orderDate);
+                            showOrder = loggedIn.isLastQuarter(orderDate);
                             break;
                         default:
                             // Show all
@@ -789,37 +789,7 @@ public class VendorGUI extends javax.swing.JFrame {
         newFrame.setVisible(true);
     }
 
-    private Date parseTimestamp(String timestamp) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
-        try {
-            dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Singapore")); 
-            return dateFormat.parse(timestamp);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null; 
-        }
-    }
 
-    private boolean isLastDay(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -1);
-        Date yesterday = calendar.getTime();
-        return date.compareTo(yesterday) >= 0;
-    }
-
-    private boolean isLastMonth(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -1);
-        Date lastMonth = calendar.getTime();
-        return date.compareTo(lastMonth) >= 0;
-    }
-
-    private boolean isLastQuarter(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -3);
-        Date lastQuarter = calendar.getTime();
-        return date.compareTo(lastQuarter) >= 0;
-    }
 
     private void updateTable(DefaultTableModel model, String filter, JTextField totalRevenueTextField) {
         // Clear existing rows
@@ -835,19 +805,19 @@ public class VendorGUI extends javax.swing.JFrame {
 
                     // Convert timestamp to date object
                     String timestamp = orderTokens[3];
-                    Date orderDate = parseTimestamp(timestamp);
+                    Date orderDate = loggedIn.parseTimestamp(timestamp);
 
                     // Check if order matches filter
                     boolean showOrder = true;
                     switch (filter) {
                         case "Last day":
-                            showOrder = isLastDay(orderDate);
+                            showOrder = loggedIn.isLastDay(orderDate);
                             break;
                         case "Last month":
-                            showOrder = isLastMonth(orderDate);
+                            showOrder = loggedIn.isLastMonth(orderDate);
                             break;
                         case "Last quarter":
-                            showOrder = isLastQuarter(orderDate);
+                            showOrder = loggedIn.isLastQuarter(orderDate);
                             break;
                     }
 

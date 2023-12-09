@@ -36,16 +36,6 @@ public class Customer extends User {
         this.balance = balance;
     }
     
-    public String viewReviews(int vendorId) {
-        // Implement this method to view reviews for a vendor
-        return "reviews";
-    }
-    
-    public String selectVendor(int vendorId) {
-        // Implement this method to select a vendor and view their menu
-        return "menu";
-    }
-    
     public void addToCart(int itemId) {
         cart.add(itemId);
     }
@@ -128,10 +118,10 @@ public class Customer extends User {
     public Order findOrderById(String orderId) {
         for (Order order : orderHistory) {
             if (order.getOrderId().equals(orderId)) {
-                return order; // Return the order if found
+                return order; 
             }
         }
-        return null; // Return null to indicate that the order with the specified orderId was not found in orderHistory
+        return null;
     }
 
     
@@ -156,10 +146,6 @@ public class Customer extends User {
         } else {
             return OrderStatus.UNKNOWN; 
         }
-    }
-
-    public void writeReview(String orderId, String review) {
-        //Implement review object?
     }
     
     

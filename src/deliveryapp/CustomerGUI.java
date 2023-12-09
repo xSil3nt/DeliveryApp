@@ -867,7 +867,7 @@ public class CustomerGUI extends javax.swing.JFrame {
         orderHistoryFrame.setVisible(true);
     }
     
-private void writeReview(String orderId, String vendorName, String date, String cart) {
+    private void writeReview(String orderId, String vendorName, String date, String cart) {
     // Get the currently logged-in customer's username
     String customerName = loggedIn.getUsername();
 
