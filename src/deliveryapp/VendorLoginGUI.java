@@ -36,7 +36,7 @@ public class VendorLoginGUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         bt_login = new javax.swing.JButton();
         tf_username = new javax.swing.JTextField();
-        tf_password = new javax.swing.JTextField();
+        tf_password = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
 
