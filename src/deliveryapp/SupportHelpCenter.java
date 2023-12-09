@@ -20,7 +20,7 @@ public class SupportHelpCenter {
                 setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
 
                 // Background image
-                ImageIcon backgroundImage = new ImageIcon("programData\\dashboard.png");
+                ImageIcon backgroundImage = new ImageIcon("programData\\img\\dashboard.png");
                 setPreferredSize(new Dimension(backgroundImage.getIconWidth(), backgroundImage.getIconHeight()));
 
                 // Title label
@@ -102,7 +102,7 @@ public class SupportHelpCenter {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // Paint the background image
-                ImageIcon backgroundImage = new ImageIcon("programData\\dashboard.png");
+                ImageIcon backgroundImage = new ImageIcon("programData\\img\\dashboard.png");
                 g.drawImage(backgroundImage.getImage(), 0, 0, this);
             }
         };

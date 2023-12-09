@@ -70,7 +70,7 @@ public class DeliveryRunnerFrame extends JFrame {
         ViewProfile_Button.setBounds(530, 50, 150, 40);
         brownPanel.add(ViewProfile_Button);
 
-        ImageIcon view_profile_Icon = new ImageIcon("C:\\Mana\\Object Oriented with Java\\profile.png");
+        ImageIcon view_profile_Icon = new ImageIcon("programData\\img\\profile.png");
         Image scaledImage = view_profile_Icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         ImageIcon scaled_profile_icon = new ImageIcon(scaledImage);
         ViewProfile_Button.setIcon(scaled_profile_icon);

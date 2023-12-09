@@ -30,7 +30,7 @@ public class Dashboard implements ActionListener {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // Use a valid image path for the login theme
-                ImageIcon loginTheme = new ImageIcon("programData\\dashboard.png");
+                ImageIcon loginTheme = new ImageIcon("programData\\img\\dashboard.png");
                 int width = getWidth();
                 int height = getHeight();
                 g.drawImage(loginTheme.getImage(), 0, 0, width, height, null);

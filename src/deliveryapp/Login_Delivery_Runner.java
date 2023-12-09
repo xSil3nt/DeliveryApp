@@ -39,7 +39,7 @@ public class Login_Delivery_Runner {
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
-                    ImageIcon loginTheme = new ImageIcon("C:\\Mana\\Object Oriented with Java\\Login_theme.png");
+                    ImageIcon loginTheme = new ImageIcon("programData\\img\\Login_theme.png");
                     int width = getWidth();
                     int height = getHeight();
                     g.drawImage(loginTheme.getImage(), 0, 0, width, height, null);
@@ -48,7 +48,7 @@ public class Login_Delivery_Runner {
 
             loginPanel.setLayout(null);
 
-            ImageIcon image = new ImageIcon("C:\\Mana\\Object Oriented with Java\\Restaurant.png");
+            ImageIcon image = new ImageIcon("programData\\img\\Restaurant.png");
             loginFrame.setIconImage(image.getImage());
 
             JLabel loginLabel = new JLabel("Welcome to Food Delivery App");

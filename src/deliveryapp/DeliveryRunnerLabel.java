@@ -11,7 +11,7 @@ public class DeliveryRunnerLabel extends JLabel {
         this.setHorizontalAlignment(JLabel.CENTER);
         this.setVerticalAlignment(JLabel.BOTTOM);
 
-        ImageIcon picture = new ImageIcon("C:\\Mana\\Object Oriented with Java\\Delivery_runner.png");
+        ImageIcon picture = new ImageIcon("programData\\img\\Delivery_runner.png");
         this.setIcon(picture);
 
         int width = 720;

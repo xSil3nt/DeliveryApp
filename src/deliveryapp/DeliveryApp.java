@@ -3,12 +3,19 @@ package deliveryapp;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import adminPackage.Admin_Dashboard;
+import com.formdev.flatlaf.intellijthemes.*;
 
 public class DeliveryApp {
 
     public static void main(String[] args) {
         String[] options = {"Admin", "Customer", "Vendor", "Delivery Runner"};
-
+        try { 
+            FlatDarkPurpleIJTheme.setup();
+            
+        } catch (Exception ex) { 
+            ex.printStackTrace();
+        }
+        
         int choice = JOptionPane.showOptionDialog(
             null,
             "Choose a login option:",
@@ -43,7 +50,6 @@ public class DeliveryApp {
                 });
                 break;
             default:
-                // Handle unexpected choices
                 break;
         }
     }
