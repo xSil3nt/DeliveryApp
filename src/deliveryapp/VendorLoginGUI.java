@@ -20,6 +20,7 @@ public class VendorLoginGUI extends javax.swing.JFrame {
      */
     public VendorLoginGUI() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
