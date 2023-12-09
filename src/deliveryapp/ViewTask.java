@@ -13,7 +13,7 @@ public class ViewTask implements ActionListener {
 
     private ArrayList<Order> orders;
     private int currentOrderIndex = -1;
-    private final String ordersFilePath = "programData\\Order.txt";
+    private final String ordersFilePath = "programData\\orders.txt";
     private final String acceptedTasksFilePath = "programData\\accepted_tasks.txt";
     private final String declinedTasksFilePath = "programData\\Declined_Tasks.txt";
 
