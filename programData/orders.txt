@@ -2,3 +2,6 @@ Shazin;Vendor1;ff71b071ce6c;Fri Dec 08 12:45:50 SGT 2023;[101];A-5-3;5.0;DELIVER
 Shazin;Vendor1;48c3d685e13b;Fri Dec 08 14:26:12 SGT 2023;[103];Self Pickup/Dine In;7.0;PENDING
 Shazin;Vendor1;cf263bb4b930;Fri Dec 08 14:31:51 SGT 2023;[102, 101];A-5-3;15.0;CANCELLED
 Shazin;Vendor1;d64d1801811c;Fri Dec 08 14:36:50 SGT 2023;[101];Self Pickup/Dine In;5.0;CANCELLED
+Shazin;Vendor1;6af4486f483e;Sat Dec 09 21:23:43 SGT 2023;[102, 103, 101];D-05-08;22.0;COMPLETED
+Shazin;Vendor1;ace0a9321abb;Sat Dec 09 21:45:29 SGT 2023;[102];D-05-08;10.0;PENDING;
+Shazin;Vendor1;e2d5078ecfac;Sat Dec 09 21:45:33 SGT 2023;[103];D-05-08;7.0;PENDING;

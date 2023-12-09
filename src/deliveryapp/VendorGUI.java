@@ -537,16 +537,14 @@ public class VendorGUI extends javax.swing.JFrame {
         if (selectedOrderStatus.equals("PENDING")) {
             bt_accept.setEnabled(true);
             bt_decline.setEnabled(true);
-        } else {
-            bt_accept.setEnabled(false);
-            bt_decline.setEnabled(false);
-        }
-        if (selectedOrderStatus.equals("IN_PROGRESS")) {
+        } else if (selectedOrderStatus.equals("IN_PROGRESS")) {
             bt_ready.setEnabled(true);
             bt_decline.setEnabled(true);
+            bt_decline.setEnabled(false);
         } else {
             bt_ready.setEnabled(false);
             bt_decline.setEnabled(false);
+            bt_accept.setEnabled(false);
         }
         
         
